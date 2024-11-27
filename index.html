@@ -52,9 +52,9 @@
           <ForceGraph3D
             ref={fgRef}
             graphData={data}
-            backgroundColor="#050008" 
-            nodeColor={node => node.group === 'core' ? '#ff4500' : '#00bfff'}
-            linkColor={() => 'rgba(200, 200, 200, 0.8)'}
+            backgroundColor="#0011" 
+            nodeColor={node => node.group === 'core' ? '#ff4500' : '#00bfff'} /* Core nodes are orange-red, others cyan-blue */
+            linkColor={() => 'rgba(200, 200, 200, 0.8)'} /* Light gray links */
             nodeLabel="id"
             nodeAutoColorBy="group"
           />

@@ -22,7 +22,7 @@
   <script type="text/jsx" data-type="module">
     import { UnrealBloomPass } from '//unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-    const { useRef, useEffect } = React;
+    const { useRef, useEffect, useCallback  } = React;
 
     fetch('./trending_users.json').then(res => res.json()).then(data => {
       const Scene = () => {
@@ -35,6 +35,18 @@
           bloomPass.threshold = 0.2;
           obj.current.postProcessingComposer().addPass(bloomPass);
         }, []);
+
+        const handleClick = useCallback(node => {
+          // Aim at node from outside it
+          const distance = 40;
+          const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+
+          obj.current.cameraPosition(
+            { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+            node, // lookAt ({ x, y, z })
+            3000  // ms transition duration
+          );
+        }, [obj]);
         
         return (
           <ForceGraph3D
@@ -49,6 +61,14 @@
               node.fy = node.y;
               node.fz = node.z;
             }}
+            onNodeClick={handleClick}
+            cooldownTicks={900}
+            onEngineStop={() => obj.current.zoomToFit(400)}
+            linkDirectionalParticleColor={() => 'cyan'}
+            linkDirectionalParticleWidth={6}
+            linkHoverPrecision={10}
+            onLinkClick={link => obj.current.emitParticle(link)}
+
           />
         );
       };

@@ -24,20 +24,12 @@
 <body>
   <div id="graph"></div>
 
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three/build/three.module.js"
-      }
-    }
-  </script>
-
-  <script type="text/jsx" data-type="module">
+  <script type="text/babel">
     const { useState, useRef, useEffect } = React;
 
     fetch('./trending_users.json')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const distance = 1000;
 
         const GraphComponent = () => {
@@ -46,24 +38,30 @@
           const [hoverNode, setHoverNode] = useState(null);
 
           useEffect(() => {
-            // Add bloom effect
-            const bloomPass = new UnrealBloomPass();
-            bloomPass.strength = 0.8;
-            bloomPass.radius = 1.0;
-            bloomPass.threshold = 0.1;
-            fgRef.current.postProcessingComposer().addPass(bloomPass);
-
-            // Smooth camera orbit
+            // Camera rotation setup
             let angle = 0;
             const interval = setInterval(() => {
-              fgRef.current.cameraPosition({
-                x: distance * Math.sin(angle),
-                z: distance * Math.cos(angle),
-              });
-              angle += Math.PI / -200;
-            }, 10);
+              fgRef.current.cameraPosition(
+                {
+                  x: distance * Math.sin(angle),
+                  z: distance * Math.cos(angle),
+                },
+                { x: 0, y: 0, z: 0 }, // Look at the graph center
+                3000 // Transition duration in ms
+              );
+              angle += Math.PI / 200;
+            }, 50);
             return () => clearInterval(interval);
           }, []);
+
+          const handleNodeHover = (node) => {
+            setHoverNode(node);
+            setHighlightNodes(node ? new Set([node.id, ...node.neighbors]) : new Set());
+          };
+
+          const handleNodeClick = (node) => {
+            alert(`Node clicked: ${node.id}`);
+          };
 
           return (
             <ForceGraph3D
@@ -71,30 +69,29 @@
               graphData={data}
               backgroundColor="#2a2a2a"
               nodeAutoColorBy="group"
-              linkColor={() => '#666'}
-              nodeOpacity={0.9}
+              linkColor={() => 'rgba(255,255,255,0.5)'}
+              linkWidth={(link) =>
+                highlightNodes.has(link.source.id) || highlightNodes.has(link.target.id) ? 2 : 1
+              }
+              linkDirectionalParticles={1}
+              linkDirectionalParticleSpeed={0.02}
               nodeRelSize={5}
               nodeLabel={(node) => `User: ${node.id}\nGroup: ${node.group}`}
-              onNodeHover={(node) => {
-                setHoverNode(node || null);
-                setHighlightNodes(node ? new Set([node.id, ...node.neighbors]) : new Set());
-              }}
-              onNodeClick={(node) => {
-                alert(`Node clicked: ${node.id}`);
-              }}
-              linkDirectionalParticles={2}
-              linkDirectionalParticleColor={() => '#ffaa00'}
-              linkWidth={(link) => (highlightNodes.has(link.source.id) || highlightNodes.has(link.target.id) ? 3 : 1)}
+              nodeThreeObjectExtend={true}
               nodeThreeObject={(node) => {
-                const sphere = new THREE.Mesh(
+                const obj = new THREE.Mesh(
                   new THREE.SphereGeometry(8),
                   new THREE.MeshStandardMaterial({
                     color: node === hoverNode ? 'gold' : node.color || '#00ffff',
+                    opacity: 0.8,
+                    transparent: true,
                   })
                 );
-                return sphere;
+                return obj;
               }}
               enableNodeDrag={true}
+              onNodeHover={handleNodeHover}
+              onNodeClick={handleNodeClick}
             />
           );
         };

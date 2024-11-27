@@ -2,21 +2,13 @@
   <style>
     body {
       margin: 0;
-      background-color: #2a2a2a;
-      /* Dark grey background */
-      color: #ffffff;
-      /* White text for better contrast */
-    }
-
-    #graph {
-      width: 100vw;
-      height: 100vh;
     }
   </style>
 
   <script src="//unpkg.com/react/umd/react.production.min.js"></script>
   <script src="//unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
   <script src="//unpkg.com/@babel/standalone"></script>
+
   <script src="//unpkg.com/three"></script>
   <script src="//unpkg.com/react-force-graph-3d"></script>
 </head>
@@ -24,79 +16,55 @@
 <body>
   <div id="graph"></div>
 
-  <script type="text/babel">
-    const { useState, useRef, useEffect } = React;
+  <script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three/build/three.module.js" } }
+  </script>
+  <script type="text/jsx" data-type="module">
+    import { UnrealBloomPass } from '//unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-    fetch('./trending_users.json')
-      .then((res) => res.json())
-      .then((data) => {
-        const distance = 1000;
+    const { useRef, useEffect } = React;
 
-        const GraphComponent = () => {
-          const fgRef = useRef();
-          const [highlightNodes, setHighlightNodes] = useState(new Set());
-          const [hoverNode, setHoverNode] = useState(null);
+    fetch('./trending_users.json').then(res => res.json()).then(data => {
+      const distance = 1000;
+      const CameraOrbit = () => {
+        const fgRef = useRef();
 
-          useEffect(() => {
-            // Camera rotation setup
-            let angle = 0;
-            const interval = setInterval(() => {
-              fgRef.current.cameraPosition(
-                {
-                  x: distance * Math.sin(angle),
-                  z: distance * Math.cos(angle),
-                },
-                { x: 0, y: 0, z: 0 }, // Look at the graph center
-                3000 // Transition duration in ms
-              );
-              angle += Math.PI / 200;
-            }, 50);
-            return () => clearInterval(interval);
-          }, []);
+        useEffect(() => {
+          const bloomPass = new UnrealBloomPass();
+          bloomPass.strength = 0.8;
+          bloomPass.radius = 1.3;
+          bloomPass.threshold = 0.2;
+          fgRef.current.postProcessingComposer().addPass(bloomPass);
 
-          const handleNodeHover = (node) => {
-            setHoverNode(node);
-            setHighlightNodes(node ? new Set([node.id, ...node.neighbors]) : new Set());
-          };
+          // Camera orbit
+          let angle = 0;
+          setInterval(() => {
+            fgRef.current.cameraPosition({
+              x: distance * Math.sin(angle),
+              z: distance * Math.cos(angle)
+            });
+            angle += Math.PI / -200;
+          }, 10);
 
-          const handleNodeClick = (node) => {
-            alert(`Node clicked: ${node.id}`);
-          };
+        }, []);
+        
+        return (
+          <ForceGraph3D
+            ref={fgRef}
+            graphData={data}
+            backgroundColor="#0011" 
+            nodeColor={node => node.group === 'core' ? '#ff4500' : '#00bfff'} /* Core nodes are orange-red, others cyan-blue */
+            linkColor={() => 'rgba(200, 200, 200, 0.8)'} /* Light gray links */
+            nodeLabel="id"
+            nodeAutoColorBy="group"
+          />
+        );
+      };
 
-          return (
-            <ForceGraph3D
-              ref={fgRef}
-              graphData={data}
-              backgroundColor="#2a2a2a"
-              nodeAutoColorBy="group"
-              linkColor={() => 'rgba(255,255,255,0.5)'}
-              linkWidth={(link) =>
-                highlightNodes.has(link.source.id) || highlightNodes.has(link.target.id) ? 2 : 1
-              }
-              linkDirectionalParticles={1}
-              linkDirectionalParticleSpeed={0.02}
-              nodeRelSize={5}
-              nodeLabel={(node) => `User: ${node.id}\nGroup: ${node.group}`}
-              nodeThreeObjectExtend={true}
-              nodeThreeObject={(node) => {
-                const obj = new THREE.Mesh(
-                  new THREE.SphereGeometry(8),
-                  new THREE.MeshStandardMaterial({
-                    color: node === hoverNode ? 'gold' : node.color || '#00ffff',
-                    opacity: 0.8,
-                    transparent: true,
-                  })
-                );
-                return obj;
-              }}
-              enableNodeDrag={true}
-              onNodeHover={handleNodeHover}
-              onNodeClick={handleNodeClick}
-            />
-          );
-        };
-
-        ReactDOM.render(<GraphComponent />, document.getElementById('graph'));
-      });
+      ReactDOM.render(
+        <CameraOrbit />,
+        document.getElementById('graph')
+      );
+    });
   </script>
 </body>

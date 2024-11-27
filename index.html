@@ -25,7 +25,7 @@
     const { useRef, useEffect } = React;
 
     fetch('./trending_users.json').then(res => res.json()).then(data => {
-      const distance = 1000;
+      const distance = 1300;
       const CameraOrbit = () => {
         const fgRef = useRef();
 
@@ -43,7 +43,7 @@
               x: distance * Math.sin(angle),
               z: distance * Math.cos(angle)
             });
-            angle += Math.PI / -200;
+            angle += Math.PI / -800;
           }, 10);
 
         }, []);

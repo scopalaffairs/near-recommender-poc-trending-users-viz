@@ -1,10 +1,22 @@
 <head>
-  <style> body { margin: 0; } </style>
+  <style>
+    body {
+      margin: 0;
+      background-color: #2a2a2a;
+      /* Dark grey background */
+      color: #ffffff;
+      /* White text for better contrast */
+    }
+
+    #graph {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
 
   <script src="//unpkg.com/react/umd/react.production.min.js"></script>
   <script src="//unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
   <script src="//unpkg.com/@babel/standalone"></script>
-
   <script src="//unpkg.com/three"></script>
   <script src="//unpkg.com/react-force-graph-3d"></script>
 </head>
@@ -12,49 +24,82 @@
 <body>
   <div id="graph"></div>
 
-  <script type="importmap">{ "imports": { "three": "https://unpkg.com/three/build/three.module.js" }}</script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three/build/three.module.js"
+      }
+    }
+  </script>
+
   <script type="text/jsx" data-type="module">
-    import { UnrealBloomPass } from '//unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+    const { useState, useRef, useEffect } = React;
 
-    const { useRef, useEffect } = React;
+    fetch('./trending_users.json')
+      .then(res => res.json())
+      .then(data => {
+        const distance = 1000;
 
-    fetch('./trending_users.json').then(res => res.json()).then(data => {
-      const distance = 1000;
-      const CameraOrbit = () => {
-        const fgRef = useRef();
+        const GraphComponent = () => {
+          const fgRef = useRef();
+          const [highlightNodes, setHighlightNodes] = useState(new Set());
+          const [hoverNode, setHoverNode] = useState(null);
 
-        useEffect(() => {
-          const bloomPass = new UnrealBloomPass();
-          bloomPass.strength = .8;
-          bloomPass.radius = 1.3;
-          bloomPass.threshold = 0.2;
-          fgRef.current.postProcessingComposer().addPass(bloomPass);
+          useEffect(() => {
+            // Add bloom effect
+            const bloomPass = new UnrealBloomPass();
+            bloomPass.strength = 0.8;
+            bloomPass.radius = 1.0;
+            bloomPass.threshold = 0.1;
+            fgRef.current.postProcessingComposer().addPass(bloomPass);
 
-          // camera orbit
-          let angle = 0;
-          setInterval(() => {
-            fgRef.current.cameraPosition({
-              x: distance * Math.sin(angle),
-              z: distance * Math.cos(angle)
-            });
-            angle += Math.PI / -200;
-          }, 10);
+            // Smooth camera orbit
+            let angle = 0;
+            const interval = setInterval(() => {
+              fgRef.current.cameraPosition({
+                x: distance * Math.sin(angle),
+                z: distance * Math.cos(angle),
+              });
+              angle += Math.PI / -200;
+            }, 10);
+            return () => clearInterval(interval);
+          }, []);
 
-        }, []);
-        
+          return (
+            <ForceGraph3D
+              ref={fgRef}
+              graphData={data}
+              backgroundColor="#2a2a2a"
+              nodeAutoColorBy="group"
+              linkColor={() => '#666'}
+              nodeOpacity={0.9}
+              nodeRelSize={5}
+              nodeLabel={(node) => `User: ${node.id}\nGroup: ${node.group}`}
+              onNodeHover={(node) => {
+                setHoverNode(node || null);
+                setHighlightNodes(node ? new Set([node.id, ...node.neighbors]) : new Set());
+              }}
+              onNodeClick={(node) => {
+                alert(`Node clicked: ${node.id}`);
+              }}
+              linkDirectionalParticles={2}
+              linkDirectionalParticleColor={() => '#ffaa00'}
+              linkWidth={(link) => (highlightNodes.has(link.source.id) || highlightNodes.has(link.target.id) ? 3 : 1)}
+              nodeThreeObject={(node) => {
+                const sphere = new THREE.Mesh(
+                  new THREE.SphereGeometry(8),
+                  new THREE.MeshStandardMaterial({
+                    color: node === hoverNode ? 'gold' : node.color || '#00ffff',
+                  })
+                );
+                return sphere;
+              }}
+              enableNodeDrag={true}
+            />
+          );
+        };
 
-        return <ForceGraph3D
-          ref={fgRef}
-          graphData={data}
-          nodeLabel="id"
-          nodeAutoColorBy="group"
-        />;
-      };
-
-      ReactDOM.render(
-        <CameraOrbit />,
-        document.getElementById('graph')
-      );
-    });
+        ReactDOM.render(<GraphComponent />, document.getElementById('graph'));
+      });
   </script>
 </body>

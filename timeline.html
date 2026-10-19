@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NEAR Social Zeitverlauf</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --surface: #fcfcfb;
+      --grid: #e8e7e3;
+      --text-primary: #0b0b0b;
+      --text-secondary: #52514e;
+      --text-muted: #7b7a75;
+      --s1: #2a78d6;
+      /* Root-Userbase */
+      --s2: #eb6834;
+      /* Aurora */
+      --s3: #1baf7a;
+      /* Mintbase/NDC */
+      --s4: #eda100;
+      /* JumpDeFi/Neko */
+      --s-other: #9a9993;
+      /* NEARxART */
+      --s-bridge: #e87ba4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:where(:not([data-theme="light"])) {
+        color-scheme: dark;
+        --surface: #1a1a19;
+        --grid: #2a2a28;
+        --text-primary: #f0efec;
+        --text-secondary: #c3c2b7;
+        --text-muted: #8d8c85;
+        --s1: #3987e5;
+        --s2: #d95926;
+        --s3: #199e70;
+        --s4: #c98500;
+        --s-other: #6f6e69;
+        --s-bridge: #d55181;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --surface: #1a1a19;
+      --grid: #2a2a28;
+      --text-primary: #f0efec;
+      --text-secondary: #c3c2b7;
+      --text-muted: #8d8c85;
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --s4: #c98500;
+      --s-other: #6f6e69;
+      --s-bridge: #d55181;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--text-primary);
+      font: 14px/1.5 system-ui, -apple-system, sans-serif;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .sub {
+      margin: 0 0 16px;
+      color: var(--text-secondary);
+    }
+
+    .verdict {
+      margin: 0 0 20px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--text-muted);
+      color: var(--text-secondary);
+    }
+
+    .verdict strong {
+      color: var(--text-primary);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+      margin: 0 0 8px;
+      padding: 0;
+      list-style: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 6px;
+      border-radius: 2px;
+      vertical-align: -1px;
+    }
+
+    .chart {
+      position: relative;
+    }
+
+    .chart h2 {
+      margin: 20px 0 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    svg text {
+      fill: var(--text-muted);
+      font-size: 11px;
+    }
+
+    svg .grid {
+      stroke: var(--grid);
+      stroke-width: 1;
+    }
+
+    svg .launch {
+      stroke: var(--text-secondary);
+      stroke-width: 1;
+    }
+
+    svg text.note {
+      fill: var(--text-secondary);
+    }
+
+    svg .hit {
+      fill: transparent;
+      cursor: default;
+    }
+
+    svg .hit:hover,
+    svg .hit:focus {
+      fill: var(--text-primary);
+      fill-opacity: .07;
+      outline: none;
+    }
+
+    #tip {
+      position: fixed;
+      z-index: 5;
+      display: none;
+      min-width: 180px;
+      padding: 8px 10px;
+      border: 1px solid var(--grid);
+      border-radius: 6px;
+      background: var(--surface);
+      box-shadow: 0 4px 16px #0003;
+      pointer-events: none;
+      font-size: 12px;
+    }
+
+    #tip .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #tip .row b {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    #tip .row span {
+      color: var(--text-secondary);
+    }
+
+    #tip .key {
+      display: inline-block;
+      width: 12px;
+      height: 2px;
+      margin-right: 6px;
+      vertical-align: 3px;
+    }
+
+    #tip .head {
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+    }
+
+    button {
+      margin: 20px 0 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--grid);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-secondary);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    table {
+      display: none;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    table.on {
+      display: table;
+    }
+
+    th,
+    td {
+      padding: 4px 8px;
+      border-bottom: 1px solid var(--grid);
+      text-align: right;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    th {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .foot {
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Neue Follows pro Woche, vor und nach dem Recommender</h1>
+    <p class="sub">Neue Follow-Kanten auf die 20 Hub-Accounts, nach Community, 2023 bis Januar 2024.</p>
+    <p class="verdict" id="verdict"></p>
+
+    <ul class="legend" id="legend"></ul>
+    <div class="chart" id="c1">
+      <h2>Neue Follows auf die Hubs (Kanten pro Woche)</h2>
+    </div>
+    <div class="chart" id="c2">
+      <h2>Brücken-Ereignisse: ein Account folgt erstmals einer zweiten Community (pro Woche)</h2>
+    </div>
+
+    <button id="toggle" aria-expanded="false">Tabelle anzeigen</button>
+    <table id="table"></table>
+
+    <p class="foot">Quelle: öffentliche NEAR-Blockchain, Kontrakt social.near (Follow-Graph). Zeitpunkte aus Block-Höhen
+      interpoliert (± wenige Tage). Nur Kanten, die am 15.01.2024 noch bestehen; Unfollows waren unter 0,5 %.
+      Launch-Datum des Recommenders ist ungefähr (NEARCon, November 2023). Beschreibend, nicht kausal: es gab keine
+      Kontrollgruppe.</p>
+  </main>
+  <div id="tip" role="status"></div>
+
+  <script>
+    const SERIES = [
+      { key: 'Root-Userbase', css: '--s1' },
+      { key: 'Aurora', css: '--s2' },
+      { key: 'Mintbase/NDC', css: '--s3' },
+      { key: 'JumpDeFi/Neko', css: '--s4' },
+      { key: 'NEARxART', css: '--s-other', label: 'Sonstige (NEARxART)' },
+    ];
+    const MONTHS = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+    const NS = 'http://www.w3.org/2000/svg';
+    const tip = document.getElementById('tip');
+
+    const el = (tag, attrs = {}, parent) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      if (parent) parent.appendChild(node);
+      return node;
+    };
+
+    // Column with square baseline and 4px rounded top; falls back to a plain rect when too small.
+    const column = (x, y, w, h, r) => {
+      r = Math.min(r, h, w / 2);
+      return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+    };
+
+    function showTip(week, evt) {
+      tip.replaceChildren();
+      const row = (label, value, css) => {
+        const div = document.createElement('div');
+        div.className = 'row';
+        const left = document.createElement('span');
+        if (css) {
+          const key = document.createElement('i');
+          key.className = 'key';
+          key.style.background = `var(${css})`;
+          left.appendChild(key);
+        }
+        left.appendChild(document.createTextNode(label));
+        const right = document.createElement('b');
+        right.textContent = value;
+        div.append(left, right);
+        tip.appendChild(div);
+      };
+      const head = document.createElement('div');
+      head.className = 'head';
+      head.textContent = `Woche ab ${week.week}`;
+      tip.appendChild(head);
+      row('Neue Follows gesamt', week.total);
+      SERIES.forEach(s => row(s.label || s.key, week.edges[s.key], s.css));
+      row('Brücken-Ereignisse', week.bridge_events, '--s-bridge');
+      tip.style.display = 'block';
+      const box = tip.getBoundingClientRect();
+      const x = Math.min(evt.clientX + 14, innerWidth - box.width - 8);
+      const y = Math.min(evt.clientY + 14, innerHeight - box.height - 8);
+      tip.style.left = `${Math.max(8, x)}px`;
+      tip.style.top = `${Math.max(8, y)}px`;
+    }
+    const hideTip = () => { tip.style.display = 'none'; };
+
+    function draw(data) {
+      const weeks = data.weeks;
+      const launchIdx = weeks.findIndex(w => new Date(w.week) <= new Date(data.launch)
+        && new Date(data.launch) < new Date(new Date(w.week).getTime() + 7 * 864e5));
+      [['c1', 260, w => w.total, 'stack'], ['c2', 120, w => w.bridge_events, 'single']].forEach(([id, H, value, kind]) => {
+        const host = document.getElementById(id);
+        host.querySelector('svg')?.remove();
+        const W = Math.max(320, host.clientWidth), M = { l: 36, r: 8, t: 14, b: 22 };
+        const plotW = W - M.l - M.r, plotH = H - M.t - M.b;
+        const slot = plotW / weeks.length, bw = Math.min(24, slot - 2);
+        const max = Math.max(...weeks.map(value));
+        const step = max > 300 ? 100 : max > 100 ? 50 : max > 40 ? 20 : max > 12 ? 10 : 5;
+        const top = Math.ceil(max / step) * step;
+        const y = v => M.t + plotH - (v / top) * plotH;
+        const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': host.querySelector('h2').textContent });
+        host.appendChild(svg);
+
+        for (let v = 0; v <= top; v += step) {
+          el('line', { class: 'grid', x1: M.l, x2: W - M.r, y1: y(v), y2: y(v) }, svg);
+          const t = el('text', { x: M.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, svg);
+          t.textContent = v >= 1000 ? `${v / 1000}K` : v;
+        }
+        weeks.forEach((w, i) => {
+          const x = M.l + i * slot + (slot - bw) / 2;
+          if (kind === 'stack') {
+            let acc = 0;
+            const segs = SERIES.map(s => ({ s, n: w.edges[s.key] })).filter(d => d.n > 0);
+            segs.forEach((d, k) => {
+              const y0 = y(acc + d.n), h = y(acc) - y0;
+              const last = k === segs.length - 1;
+              const gap = k === 0 ? 0 : 2;  // 2px surface gap between stacked segments
+              const hh = Math.max(1, h - gap);
+              el('path', { d: column(x, y0, bw, hh, last ? 4 : 0), style: `fill: var(${d.s.css})` }, svg);
+              acc += d.n;
+            });
+          } else if (w.bridge_events > 0) {
+            const y0 = y(w.bridge_events);
+            el('path', { d: column(x, y0, bw, y(0) - y0, 4), style: 'fill: var(--s-bridge)' }, svg);
+          }
+          const hit = el('rect', { class: 'hit', x: M.l + i * slot, y: M.t, width: slot, height: plotH, tabindex: 0,
+            'aria-label': `Woche ab ${w.week}: ${w.total} neue Follows, ${w.bridge_events} Brücken-Ereignisse` }, svg);
+          hit.addEventListener('pointermove', e => showTip(w, e));
+          hit.addEventListener('pointerleave', hideTip);
+          hit.addEventListener('focus', () => { const b = hit.getBoundingClientRect(); showTip(w, { clientX: b.left, clientY: b.top }); });
+          hit.addEventListener('blur', hideTip);
+          const d = new Date(w.week);
+          if (d.getDate() <= 7) {
+            const t = el('text', { x: M.l + i * slot + slot / 2, y: H - 6, 'text-anchor': 'middle' }, svg);
+            t.textContent = d.getMonth() === 0 ? `Jan ${String(d.getFullYear()).slice(2)}` : MONTHS[d.getMonth()];
+          }
+        });
+        if (launchIdx >= 0) {
+          const lx = M.l + launchIdx * slot + slot / 2;
+          el('line', { class: 'launch', x1: lx, x2: lx, y1: M.t - 4, y2: M.t + plotH }, svg);
+          if (id === 'c1') {
+            const t = el('text', { class: 'note', x: lx - 6, y: M.t + 6, 'text-anchor': 'end' }, svg);
+            t.textContent = 'Recommender-Launch (ca. Nov 2023)';
+          }
+        }
+        if (id === 'c1') {
+          // One selective direct label: the campaign peak that dominates the early weeks.
+          const pk = weeks.reduce((a, b, i) => (b.total > weeks[a].total ? i : a), 0);
+          const t = el('text', { class: 'note', x: M.l + pk * slot + slot + 4, y: y(weeks[pk].total) + 10 }, svg);
+          t.textContent = `${weeks[pk].total} · Aurora-Kampagne`;
+        }
+      });
+    }
+
+    function summary(data) {
+      const idx = data.weeks.findIndex(w => w.week >= '2023-11-06');
+      const avg = ws => ws.reduce((a, w) => a + w.total, 0) / ws.length;
+      const bavg = ws => ws.reduce((a, w) => a + w.bridge_events, 0) / ws.length;
+      const before = data.weeks.slice(idx - 8, idx), after = data.weeks.slice(idx, idx + 8);
+      const f = n => n.toFixed(1).replace('.', ',');
+      const p = document.getElementById('verdict');
+      p.replaceChildren();
+      const strong = document.createElement('strong');
+      const rose = avg(after) > avg(before) * 1.1;
+      strong.textContent = rose ? 'Anstieg nach dem Launch. ' : 'Kein Anstieg nach dem Launch. ';
+      p.append(strong, document.createTextNode(
+        `Acht Wochen vor dem Launch kamen im Schnitt ${f(avg(before))} neue Follows pro Woche auf die Hubs, `
+        + `acht Wochen danach ${f(avg(after))}; Brücken-Ereignisse: ${f(bavg(before))} gegen ${f(bavg(after))} pro Woche. `
+        + (rose ? '' : 'Der Rückgang begann schon im Frühjahr 2023, nach den Kampagnen von Aurora und JumpDeFi.')));
+    }
+
+    function table(data) {
+      const t = document.getElementById('table');
+      t.replaceChildren();
+      const head = t.createTHead().insertRow();
+      ['Woche ab', 'Gesamt', ...SERIES.map(s => s.label || s.key), 'Brücken'].forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        head.appendChild(th);
+      });
+      const body = t.createTBody();
+      data.weeks.forEach(w => {
+        const r = body.insertRow();
+        [w.week, w.total, ...SERIES.map(s => w.edges[s.key]), w.bridge_events].forEach(v => { r.insertCell().textContent = v; });
+      });
+    }
+
+    fetch('./data/timeline.json').then(r => r.json()).then(data => {
+      const legend = document.getElementById('legend');
+      [...SERIES, { label: 'Brücken-Ereignisse', css: '--s-bridge' }].forEach(s => {
+        const li = document.createElement('li');
+        const sw = document.createElement('i');
+        sw.style.background = `var(${s.css})`;
+        li.append(sw, document.createTextNode(s.label || s.key));
+        legend.appendChild(li);
+      });
+      summary(data);
+      table(data);
+      draw(data);
+      let timer;
+      addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => draw(data), 100); });
+    });
+
+    document.getElementById('toggle').addEventListener('click', e => {
+      const on = document.getElementById('table').classList.toggle('on');
+      e.target.textContent = on ? 'Tabelle ausblenden' : 'Tabelle anzeigen';
+      e.target.setAttribute('aria-expanded', on);
+    });
+  </script>
+</body>
+
+</html>

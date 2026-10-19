@@ -30,3 +30,9 @@ for 2023-04-15 against the original file: 96 % of nodes, 93 % of edges.
 `metrics.json` also lists isolated clusters per snapshot (non-root-userbase accounts with >= 25 followers
 who follow nobody in the root userbase). These are not part of the cohort graphs, so clusters that only
 appeared later (e.g. creativesdao, nearchinese, nearinturkiye in Oct 2023) are visible there but not in the viz.
+
+## Timeline
+
+`python3 pipeline/timeline.py` (needs `data/edges_bh_2024-01-15.json`, edge creation block heights) writes
+`data/timeline.json`: weekly new follow edges into the anchor cohort per community, and weekly bridge events
+(an account follows a second community for the first time). `timeline.html` plots it.

@@ -43,9 +43,9 @@ def main():
         for s in SEEDS:
             friends |= set(f.get(s, []))
 
-        leaves = set().union(*[fol[x] for x in anchors]) - anchors
+        leaves = sorted(set().union(*[fol[x] for x in anchors]) - anchors)  # sorted: deterministic output
         links = [{'source': s, 'target': t, 'value': 0} for s in leaves for t in f.get(s, []) if t in anchors]
-        links += [{'source': s, 'target': t, 'value': 1} for s in anchors for t in f.get(s, []) if t in anchors]
+        links += [{'source': s, 'target': t, 'value': 1} for s in sorted(anchors) for t in f.get(s, []) if t in anchors]
         groups_followed = {s: {group_of[t] for t in f.get(s, []) if t in anchors} for s in leaves}
         bridges = {s for s, g in groups_followed.items() if len(g) >= 2}
 
@@ -54,7 +54,7 @@ def main():
             if i in bridges:
                 n['bridge'] = True
             return n
-        out_nodes = [node(i, group_of[i]) for i in sorted(anchors)] + [node(i, 1000) for i in sorted(leaves)]
+        out_nodes = [node(i, group_of[i]) for i in sorted(anchors)] + [node(i, 1000) for i in leaves]
         json.dump({'nodes': out_nodes, 'links': links, 'meta': {'snapshot': label, 'block': json.load(open(f'data/raw/follows_{label}.json'))['block']}},
                   open(f'data/trending_users_{label}.json', 'w'), separators=(',', ':'))
 

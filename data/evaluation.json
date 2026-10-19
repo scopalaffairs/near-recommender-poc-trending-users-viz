@@ -1,212 +1,212 @@
 [
  {
-  "label": "before launch (matrix date to 2023-10-31)",
+  "label": "before launch (matrix date to 2023-10-02)",
   "window": [
    "2023-04-26",
-   "2023-10-31"
+   "2023-10-02"
   ],
-  "users": 669,
+  "users": 641,
   "methods": {
    "all/popularity@5": {
-    "users": 669,
-    "rate": 0.284
+    "users": 641,
+    "rate": 0.2777
    },
    "all/hits@5": {
-    "users": 669,
-    "rate": 0.2975
+    "users": 641,
+    "rate": 0.2902
    },
    "all/friends@5": {
-    "users": 669,
-    "rate": 0.3229
+    "users": 641,
+    "rate": 0.3073
    },
    "all/trending@5": {
-    "users": 669,
-    "rate": 0.1159
+    "users": 641,
+    "rate": 0.112
    },
    "all/random@5": {
-    "users": 669,
-    "rate": 0.025
+    "users": 641,
+    "rate": 0.0221
    },
    "all/popularity@15": {
-    "users": 669,
-    "rate": 0.3871
+    "users": 641,
+    "rate": 0.3791
    },
    "all/hits@15": {
-    "users": 669,
-    "rate": 0.3901
+    "users": 641,
+    "rate": 0.3853
    },
    "all/friends@15": {
-    "users": 669,
-    "rate": 0.4305
+    "users": 641,
+    "rate": 0.415
    },
    "all/trending@15": {
-    "users": 669,
-    "rate": 0.2681
+    "users": 641,
+    "rate": 0.2617
    },
    "all/random@15": {
-    "users": 669,
-    "rate": 0.062
+    "users": 641,
+    "rate": 0.0615
    },
    "matrix/popularity@5": {
-    "users": 640,
-    "rate": 0.2812
+    "users": 614,
+    "rate": 0.2736
    },
    "matrix/hits@5": {
-    "users": 640,
-    "rate": 0.2953
+    "users": 614,
+    "rate": 0.2866
    },
    "matrix/friends@5": {
-    "users": 640,
-    "rate": 0.3203
+    "users": 614,
+    "rate": 0.3046
    },
    "matrix/trending@5": {
-    "users": 640,
-    "rate": 0.1166
+    "users": 614,
+    "rate": 0.1146
    },
    "matrix/random@5": {
-    "users": 640,
-    "rate": 0.0234
+    "users": 614,
+    "rate": 0.0224
    },
    "matrix/stored@5": {
-    "users": 640,
-    "rate": 0.1828
+    "users": 614,
+    "rate": 0.1759
    },
    "matrix/popularity@15": {
-    "users": 640,
-    "rate": 0.3859
+    "users": 614,
+    "rate": 0.3779
    },
    "matrix/hits@15": {
-    "users": 640,
-    "rate": 0.3906
+    "users": 614,
+    "rate": 0.3844
    },
    "matrix/friends@15": {
-    "users": 640,
-    "rate": 0.4297
+    "users": 614,
+    "rate": 0.4153
    },
    "matrix/trending@15": {
-    "users": 640,
-    "rate": 0.2702
+    "users": 614,
+    "rate": 0.2643
    },
    "matrix/random@15": {
-    "users": 640,
-    "rate": 0.0578
+    "users": 614,
+    "rate": 0.0581
    },
    "matrix/stored@15": {
-    "users": 640,
-    "rate": 0.25
+    "users": 614,
+    "rate": 0.2443
    }
   },
   "cold_start": {
-   "newcomers": 3763,
-   "follow_a_hub": 0.1661,
-   "follow_2_communities": 0.0237,
-   "hit_trending@5": 0.0553,
-   "hit_popularity@5": 0.143
+   "newcomers": 3364,
+   "follow_a_hub": 0.1724,
+   "follow_2_communities": 0.0238,
+   "hit_trending@5": 0.057,
+   "hit_popularity@5": 0.1471
   }
  },
  {
-  "label": "after launch (2023-11-07 to 2024-01-15)",
+  "label": "after launch (2023-10-02 to 2024-01-15)",
   "window": [
-   "2023-11-07",
+   "2023-10-02",
    "2024-01-15"
   ],
-  "users": 715,
+  "users": 845,
   "methods": {
    "all/popularity@5": {
-    "users": 715,
-    "rate": 0.0671
+    "users": 845,
+    "rate": 0.1065
    },
    "all/hits@5": {
-    "users": 715,
-    "rate": 0.0797
-   },
-   "all/friends@5": {
-    "users": 715,
+    "users": 845,
     "rate": 0.1231
    },
+   "all/friends@5": {
+    "users": 845,
+    "rate": 0.1716
+   },
    "all/trending@5": {
-    "users": 715,
-    "rate": 0.0278
+    "users": 845,
+    "rate": 0.0412
    },
    "all/random@5": {
-    "users": 715,
-    "rate": 0.0015
+    "users": 845,
+    "rate": 0.0033
    },
    "all/popularity@15": {
-    "users": 715,
-    "rate": 0.1538
+    "users": 845,
+    "rate": 0.2284
    },
    "all/hits@15": {
-    "users": 715,
-    "rate": 0.165
+    "users": 845,
+    "rate": 0.2296
    },
    "all/friends@15": {
-    "users": 715,
-    "rate": 0.2112
+    "users": 845,
+    "rate": 0.2781
    },
    "all/trending@15": {
-    "users": 715,
-    "rate": 0.0878
+    "users": 845,
+    "rate": 0.1256
    },
    "all/random@15": {
-    "users": 715,
-    "rate": 0.0046
+    "users": 845,
+    "rate": 0.0096
    },
    "matrix/popularity@5": {
-    "users": 329,
-    "rate": 0.0517
+    "users": 415,
+    "rate": 0.094
    },
    "matrix/hits@5": {
-    "users": 329,
-    "rate": 0.0912
+    "users": 415,
+    "rate": 0.1373
    },
    "matrix/friends@5": {
-    "users": 329,
-    "rate": 0.1216
+    "users": 415,
+    "rate": 0.1687
    },
    "matrix/trending@5": {
-    "users": 329,
-    "rate": 0.0248
+    "users": 415,
+    "rate": 0.0417
    },
    "matrix/random@5": {
-    "users": 329,
-    "rate": 0.0018
+    "users": 415,
+    "rate": 0.0022
    },
    "matrix/stored@5": {
-    "users": 329,
-    "rate": 0.0274
+    "users": 415,
+    "rate": 0.0482
    },
    "matrix/popularity@15": {
-    "users": 329,
-    "rate": 0.1429
+    "users": 415,
+    "rate": 0.212
    },
    "matrix/hits@15": {
-    "users": 329,
-    "rate": 0.1793
+    "users": 415,
+    "rate": 0.2361
    },
    "matrix/friends@15": {
-    "users": 329,
-    "rate": 0.2158
+    "users": 415,
+    "rate": 0.2747
    },
    "matrix/trending@15": {
-    "users": 329,
-    "rate": 0.0933
+    "users": 415,
+    "rate": 0.1272
    },
    "matrix/random@15": {
-    "users": 329,
-    "rate": 0.0059
+    "users": 415,
+    "rate": 0.009
    },
    "matrix/stored@15": {
-    "users": 329,
-    "rate": 0.0426
+    "users": 415,
+    "rate": 0.0699
    }
   },
   "cold_start": {
-   "newcomers": 1351,
-   "follow_a_hub": 0.0459,
-   "follow_2_communities": 0.0007,
-   "hit_trending@5": 0.013,
-   "hit_popularity@5": 0.0311
+   "newcomers": 1818,
+   "follow_a_hub": 0.0561,
+   "follow_2_communities": 0.0044,
+   "hit_trending@5": 0.0171,
+   "hit_popularity@5": 0.0407
   }
  }
 ]

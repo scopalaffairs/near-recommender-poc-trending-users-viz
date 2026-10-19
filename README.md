@@ -31,7 +31,7 @@ According to the project author, the timeline was: research in spring 2023 (Goog
 bootcamp the author was hired as a freelancer and worked on it full-time from September 2023, improved all three
 methods and handed over the complete package. The author kept no copy of that final code, so the bootcamp repository
 is the only code that survives. The recommender went live
-around November 2023 (about the time of NEARCon in Lisbon). The near.org platform, relaunched in August 2023, was shut
+in early October 2023. The near.org platform, relaunched in August 2023, was shut
 down in March 2024.
 
 This repository is not that launched system. It rebuilds the network data around it from the public chain, and it
@@ -80,14 +80,17 @@ Descriptive only. There was no control group, so none of this proves or disprove
 | nodes in the cohort graph | 1,728 | 2,422 | 2,518 |
 | bridge accounts (follow ≥ 2 communities) | 140 (8.2 %) | 314 (13.1 %) | 333 (13.3 %) |
 
-- **The clusters merged before the recommender existed, not after.** The bridge share rose from April to October
-  2023 and then stayed flat to January 2024.
+- **Most clusters merged before the recommender existed.** The bridge share rose from 8.2 % in April to 13.1 % at
+  the end of October 2023 and was 13.3 % in January 2024. In the weekly series, 158 of the 195 new bridge events after
+  2023-04-17 happened before the launch (6.6 per week, against 2.6 per week afterwards).
 - **Growth peaked in spring 2023 and faded.** The weekly new follows into the hubs peaked at 408 in the week of
   2023-02-27 (the Aurora campaign) and were at 20 to 50 per week by autumn.
-- **No visible bump at the launch.** In the eight weeks before the launch the hubs gained 29.8 new follows per week
-  on average, in the eight weeks after 17.0. New bridge events: 3.4 versus 2.0 per week.
-- **Conversion did not rise.** Of the accounts that followed only Aurora hubs, 0.42 % per month also followed another
-  community between April and October 2023, and 0.30 % per month between October and January.
+- **No lasting bump at the launch.** In the eight weeks before the launch the hubs gained 42.6 new follows per week
+  on average, in the eight weeks after 25.1. New bridge events: 5.6 versus 4.0 per week. There is a one-week rise in
+  the week of 2023-10-09 (37 new follows after 14 the week before, 6 bridge events after 2), but it is gone the week
+  after and no larger than swings before the launch (53 in the week of 2023-09-18).
+- **Conversion did not rise.** Of the accounts that followed only Aurora hubs, 0.45 % per month later followed another
+  community between April and the launch (26 of 1,042 accounts), and 0.28 % per month after it (13 of 1,330).
 - **The Aurora cluster stayed a mushroom.** 92 % of its followers followed no other community in April 2023, 88 % in
   January 2024.
 - **Almost nobody unfollowed.** Less than 0.3 % of follow edges disappeared between snapshots. Writing to the chain
@@ -97,10 +100,11 @@ Descriptive only. There was no control group, so none of this proves or disprove
 
 ![New followers per week, trending hubs versus comparison accounts](docs/images/impact.jpg)
 
-After the recommender launch (approx. November 2023) the 20 trending hubs gained 136 new followers in eight weeks against 244 before (-44 %), and 20
-comparison accounts of similar size fell by about the same (-56 %). The small gap between the two is within what fake
-launch dates produce, and new accounts followed a hub less often afterwards (5.5 % against 3.7 %), so there is no
-measurable effect of the recommender on follower growth; a small effect cannot be excluded.
+After the recommender launch (early October 2023) the 20 trending hubs gained 206 new followers in eight weeks against
+348 before (-41 %), and 20 comparison accounts of similar size fell more (-56 %, from 391 to 171). The hubs held up
+somewhat better, but that gap (ratio 1.35, range 0.71 to 2.23) is within what fake launch dates produce, and new
+accounts followed a hub less often afterwards (7.7 % against 5.4 %), so there is no measurable effect of the
+recommender on follower growth; a small effect cannot be excluded.
 
 The comparison group is the 20 largest accounts outside the hub list on 2023-04-15, which the trending rule would not
 have pushed. Details, table and method are on [impact.html](impact.html); the calculation is `pipeline/impact.py`
@@ -113,36 +117,36 @@ How well would the ideas of the bootcamp repository have predicted the follows t
 test of the launched system, which improved all three methods. For a time
 window, the graph at the start is rebuilt, every method recommends accounts per user, and a user counts as a hit if
 at least one recommended account was followed within the window (`pipeline/evaluate.py`, results in
-`data/evaluation.json`). Users are existing accounts that made a new follow in the window (669 before the launch, 715
-after). The windows differ in length (2023-04-26 to 2023-10-31 versus 2023-11-07 to 2024-01-15), so compare methods
+`data/evaluation.json`). Users are existing accounts that made a new follow in the window (641 before the launch, 845
+after). The windows differ in length (2023-04-26 to 2023-10-02 versus 2023-10-02 to 2024-01-15), so compare methods
 within a window, not rates across windows.
 
 | Hit rate, 5 recommendations per user | before launch | after launch |
 |---|---|---|
-| friends of friends (2-hop) | 32.3 % | 12.3 % |
-| HITS authority | 29.8 % | 8.0 % |
-| most followed (popularity) | 28.4 % | 6.7 % |
-| trending hubs outside the user's community | 11.6 % | 2.8 % |
-| random accounts | 2.5 % | 0.2 % |
+| friends of friends (2-hop) | 30.7 % | 17.2 % |
+| HITS authority | 29.0 % | 12.3 % |
+| most followed (popularity) | 27.8 % | 10.7 % |
+| trending hubs outside the user's community | 11.2 % | 4.1 % |
+| random accounts | 2.2 % | 0.3 % |
 
 The saved recommendations of the bootcamp repository (`matrix_intersection_05.json`, 15 per user, committed
-2023-04-26; here `data/raw/stored_recommendations_2023-04-26.json`) were tested on the 640 of their users that made a
-new follow before the launch: 25.0 % hit with all 15 and 18.3 % with the top 5. Plain popularity reaches 38.6 % and
-28.1 % for the same users. The lists were hardly personalized: `gilberth.near` was in 3,495 of the 3,499 lists.
+2023-04-26; here `data/raw/stored_recommendations_2023-04-26.json`) were tested on the 614 of their users that made a
+new follow before the launch: 24.4 % hit with all 15 and 17.6 % with the top 5. Plain popularity reaches 37.8 % and
+27.4 % for the same users. The lists were hardly personalized: `gilberth.near` was in 3,495 of the 3,499 lists.
 
 For accounts that appear for the first time in the window, which is the case the bootcamp rule handled with trending
 users (accounts younger than 7 days):
 
 | | before launch | after launch |
 |---|---|---|
-| new accounts in the window | 3,763 | 1,351 |
-| follow at least one of the 20 hubs | 16.6 % | 4.6 % |
-| follow hubs of two or more communities | 2.4 % | 0.07 % |
-| top-5 most followed accounts would hit | 14.3 % | 3.1 % |
-| 5 random hubs would hit | 5.5 % | 1.3 % |
+| new accounts in the window | 3,364 | 1,818 |
+| follow at least one of the 20 hubs | 17.2 % | 5.6 % |
+| follow hubs of two or more communities | 2.4 % | 0.4 % |
+| top-5 most followed accounts would hit | 14.7 % | 4.1 % |
+| 5 random hubs would hit | 5.7 % | 1.7 % |
 
 What this says: suggesting accounts from another community is the mixing idea of the project, and it is exactly what
-users are least likely to follow on their own (11.6 % against 32.3 % for friends of friends).
+users are least likely to follow on their own (11.2 % against 30.7 % for friends of friends).
 
 Limits of this test: it measures agreement with organic follows, not whether users saw or acted on a suggestion
 (there are no impression logs). The trending list is the April 2023 cohort, not a list recomputed at launch. Friends
@@ -152,7 +156,7 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
 ## Limitations
 
 - **No control group, no causal claim.** Between April 2023 and January 2024 there were also the near.org relaunch,
-  NEARCon and general network growth and decline. The launch date is approximate.
+  NEARCon and general network growth and decline. The launch date is approximate (early October 2023).
 - **The cohort is fixed on purpose**, so it cannot show clusters that appeared later. `data/metrics.json` lists
   isolated clusters per snapshot, e.g. `creativesdao.sputnik-dao.near`, `nearchinese.near` and `nearinturkiye.near`
   in October 2023.
@@ -161,9 +165,10 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
   would need transaction data (for example NEAR Lake or the public BigQuery dataset).
 - **Only follow edges still present are seen.** The account list comes from today's follow keys
   (`api.near.social`), so accounts that have since removed every follow are missing.
-- **"Launch" always means the recommender**, dated approximately to November 2023. The switch of the platform from
-  near.social to near.org (August 2023, per the author) is a separate event that is not modeled; both used the same
-  `social.near` data, so the chain data is continuous across it.
+- **"Launch" always means the recommender**, dated approximately to early October 2023. The switch of the platform
+  from near.social to near.org (August 2023, per the author) is a separate event that is not modeled; both used the
+  same `social.near` data, so the chain data is continuous across it. The eight weeks before the launch (from
+  2023-08-07) overlap the weeks after that relaunch.
 - **Block heights to dates** are interpolated between blocks with exactly known timestamps (error of a few days).
 
 ## Repository layout

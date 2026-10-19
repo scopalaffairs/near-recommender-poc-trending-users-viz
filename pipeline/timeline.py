@@ -11,7 +11,7 @@ import json
 import sys
 
 ANCHORS = [(88469695, '2023-03-31'), (89599925, '2023-04-15'), (104573607, '2023-10-31'), (110424804, '2024-01-15')]
-LAUNCH = '2023-11-07'  # recommender "around November 2023 / NEARCon Lisbon"; exact day unknown
+LAUNCH = '2023-10-02'  # recommender launch, "early October 2023" per the author; exact day unknown
 NAME = {0: 'Aurora', 1: 'Root-Userbase', 4: 'Mintbase/NDC', 5: 'JumpDeFi/Neko', 9: 'NEARxART'}
 
 

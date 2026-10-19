@@ -25,7 +25,7 @@ import sys
 
 sys.path.insert(0, 'pipeline')
 from hits import hits  # noqa: E402
-from timeline import ANCHORS  # noqa: E402
+from timeline import ANCHORS, LAUNCH  # noqa: E402
 
 MATRIX = 'data/raw/stored_recommendations_2023-04-26.json'  # near_recommender matrix_intersection_05.json, best first
 
@@ -135,8 +135,8 @@ def main():
     edges = json.load(open('data/edges_bh_2024-01-15.json'))['edges']
     matrix = json.load(open(MATRIX))
     out = [
-        evaluate(edges, cohort, matrix, '2023-04-26', '2023-10-31', 'before launch (matrix date to 2023-10-31)'),
-        evaluate(edges, cohort, matrix, '2023-11-07', '2024-01-15', 'after launch (2023-11-07 to 2024-01-15)'),
+        evaluate(edges, cohort, matrix, '2023-04-26', LAUNCH, f'before launch (matrix date to {LAUNCH})'),
+        evaluate(edges, cohort, matrix, LAUNCH, '2024-01-15', f'after launch ({LAUNCH} to 2024-01-15)'),
     ]
     json.dump(out, open('data/evaluation.json', 'w'), indent=1)
     for window in out:

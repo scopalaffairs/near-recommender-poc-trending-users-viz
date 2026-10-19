@@ -275,7 +275,7 @@
 
     <p class="foot">Source: public NEAR blockchain, contract social.near (follow graph). Dates are interpolated from block
       heights (± a few days). Only edges still present on 2024-01-15; unfollows were below 0.5 %. The recommender's
-      launch date is approximate (NEARCon, November 2023). Descriptive, not causal: there was no control group. See also the <a href="./impact.html">comparison with control accounts</a>.</p>
+      launch date is approximate (early October 2023, per the project author). Descriptive, not causal: there was no control group. See also the <a href="./impact.html">comparison with control accounts</a>.</p>
   </main>
   <div id="tip" role="status"></div>
 
@@ -394,7 +394,7 @@
           el('line', { class: 'launch', x1: lx, x2: lx, y1: M.t - 4, y2: M.t + plotH }, svg);
           if (id === 'c1') {
             const t = el('text', { class: 'note', x: lx - 6, y: M.t + 6, 'text-anchor': 'end' }, svg);
-            t.textContent = 'Recommender launch (approx. Nov 2023)';
+            t.textContent = 'Recommender launch (early Oct 2023)';
           }
         }
         if (id === 'c1') {
@@ -407,7 +407,8 @@
     }
 
     function summary(data) {
-      const idx = data.weeks.findIndex(w => w.week >= '2023-11-06');
+      const idx = data.weeks.findIndex(w => new Date(w.week) <= new Date(data.launch)
+        && new Date(data.launch) < new Date(new Date(w.week).getTime() + 7 * 864e5));
       const avg = ws => ws.reduce((a, w) => a + w.total, 0) / ws.length;
       const bavg = ws => ws.reduce((a, w) => a + w.bridge_events, 0) / ws.length;
       const before = data.weeks.slice(idx - 8, idx), after = data.weeks.slice(idx, idx + 8);

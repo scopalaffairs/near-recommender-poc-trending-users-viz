@@ -15,6 +15,7 @@ import random
 import sys
 
 sys.path.insert(0, 'pipeline')
+from evaluate import to_block  # noqa: E402
 from timeline import LAUNCH, to_date  # noqa: E402
 
 WEEKS = 8
@@ -116,6 +117,32 @@ def main():
 
     summary['newcomers'] = {k: {'before': round(share(new_pre, k)[0], 4), 'after': round(share(new_post, k)[0], 4)} for k in ('hub', 'control')}
     summary['newcomers']['count'] = {'before': share(new_pre, 'hub')[1], 'after': share(new_post, 'hub')[1]}
+
+    # conversion: accounts that follow only one community (as of a date) and later follow another one, per month
+    group = {n['id']: n['group'] for n in base['nodes'] if n['group'] != 1000}
+    to_block_fn = lambda day: to_block(day)
+
+    def groups_at(block):
+        g = collections.defaultdict(set)
+        for s, targets in edges.items():
+            if s in group:
+                continue
+            for t, b in targets.items():
+                if t in group and b <= block:
+                    g[s].add(group[t])
+        return g
+
+    def conversion(start, end, months, community=0):
+        b0, b1 = to_block_fn(start), to_block_fn(end)
+        g0, g1 = groups_at(b0), groups_at(b1)
+        only = [u for u, gs in g0.items() if gs == {community}]
+        moved = sum(1 for u in only if g1.get(u, {community}) - {community})
+        return {'accounts': len(only), 'moved': moved, 'per_month': round(moved / len(only) / months * 100, 3) if only else None}
+
+    months_pre = (datetime.date.fromisoformat(LAUNCH) - datetime.date(2023, 4, 15)).days / 30.44
+    months_post = (datetime.date(2024, 1, 15) - datetime.date.fromisoformat(LAUNCH)).days / 30.44
+    summary['conversion_aurora_to_other'] = {
+        'before': conversion('2023-04-15', LAUNCH, months_pre), 'after': conversion(LAUNCH, '2024-01-15', months_post)}
 
     out = {'summary': summary, 'placebo_by_week': placebo_by_week, 'weeks': [
         {'week': (datetime.date(2023, 1, 2) + datetime.timedelta(weeks=w)).isoformat(),

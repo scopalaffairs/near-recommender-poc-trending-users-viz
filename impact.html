@@ -229,7 +229,7 @@
 
     <p class="foot">Method: difference in differences. Hubs are the 20 accounts of the original trending list; the
       comparison group is the 20 largest accounts outside that list on 2023-04-15. Each count is the number of follows
-      written to the NEAR blockchain (contract social.near) in the week; the recommender launch (approx. 2023-11-07)
+      written to the NEAR blockchain (contract social.near) in the week; the recommender launch (approx. 2023-10-02)
       is dated from block heights and is approximate. The ratio compares the average after the launch to the average
       before it, hubs divided by comparison; the range (wide, so a small effect cannot be excluded) is a bootstrap
       over accounts, and the placebo values apply the same calculation to fake launch dates. No impression logs exist, so this measures follower growth, not who saw
@@ -265,9 +265,9 @@ const pct = (a, b) => `${a >= b ? '+' : '−'}${Math.abs(Math.round((a / b - 1) 
       const p = document.getElementById('verdict');
       p.replaceChildren();
       const strong = document.createElement('strong');
-      strong.textContent = `After the recommender launch (approx. November 2023) the 20 trending hubs gained ${s.hubs.after} new followers in eight weeks against ${s.hubs.before} before (${pct(s.hubs.after, s.hubs.before)}), and 20 comparison accounts of similar size fell by about the same (${pct(s.control.after, s.control.before)}). `;
+      strong.textContent = `After the recommender launch (early October 2023) the 20 trending hubs gained ${s.hubs.after} new followers in eight weeks against ${s.hubs.before} before (${pct(s.hubs.after, s.hubs.before)}), and 20 comparison accounts of similar size went from ${s.control.before} to ${s.control.after} (${pct(s.control.after, s.control.before)}). `;
       p.append(strong, document.createTextNode(
-        'The small gap between the two is within what fake launch dates produce, and new accounts followed a hub less often afterwards, so there is no measurable effect of the recommender on follower growth.'));
+        'The gap between the two is within what fake launch dates produce, and new accounts followed a hub less often afterwards, so there is no measurable effect of the recommender on follower growth.'));
     }
 
     function table(s) {
@@ -296,7 +296,7 @@ const pct = (a, b) => `${a >= b ? '+' : '−'}${Math.abs(Math.round((a / b - 1) 
       const host = document.getElementById('chart');
       host.querySelector('svg')?.remove();
       // the last week holds a single day (the snapshot ends on 2024-01-15), so it is left out
-      const weeks = data.weeks.filter(w => w.week >= '2023-08-14' && w.week <= '2024-01-08');
+      const weeks = data.weeks.filter(w => w.week >= '2023-07-24' && w.week <= '2024-01-08');
       const launchWeek = weeks.findIndex(w => w.week >= data.summary.launch) - 1;  // week containing the launch day
       const W = Math.max(320, host.clientWidth), H = 280, M = { l: 36, r: 110, t: 18, b: 24 };
       const plotW = W - M.l - M.r, plotH = H - M.t - M.b;

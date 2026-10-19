@@ -12,7 +12,7 @@ Run from the repo root (`python3 pipeline/snap2.py`); paths are relative to it.
    (`{block, label, follows: {account: [followed, ...]}}`). Throttled and resumable, because the RPC rate-limits (HTTP 429).
 4. `hits.py`: Kleinberg HITS (hub and authority scores) on the follow graph.
 
-Snapshots: 2023-04-15 (before), 2023-10-31 (shortly before recommender launch), 2024-01-15 (after).
+Snapshots: 2023-04-15 (before), 2023-10-31 (one month after the recommender launch), 2024-01-15 (after).
 Limitation: the account list is from today, so accounts that have since removed all follows are missing.
 
 ## Cascade and outputs

@@ -46,3 +46,9 @@ appeared later (e.g. creativesdao, nearchinese, nearinturkiye in Oct 2023) are v
 friends of friends, trending hubs outside the user's community, and the saved recommendations in
 `data/raw/stored_recommendations_2023-04-26.json`) on a hold-out basis against the follows that really happened, and
 writes `data/evaluation.json`. See the top-level README for results and limits.
+
+## Impact
+
+`python3 pipeline/impact.py` compares the follower growth of the 20 hubs with 20 comparison accounts (the largest accounts
+outside the hub list on 2023-04-15) before and after the recommender launch: difference in differences, a bootstrap
+over accounts and placebo launch dates. It writes `data/impact.json`, which `impact.html` plots.

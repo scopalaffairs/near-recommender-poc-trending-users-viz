@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recommender impact on followers</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --surface: #fcfcfb;
+      --grid: #e8e7e3;
+      --text-primary: #0b0b0b;
+      --text-secondary: #52514e;
+      --text-muted: #7b7a75;
+      --s1: #2a78d6;
+      --s2: #eb6834;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:where(:not([data-theme="light"])) {
+        color-scheme: dark;
+        --surface: #1a1a19;
+        --grid: #2a2a28;
+        --text-primary: #f0efec;
+        --text-secondary: #c3c2b7;
+        --text-muted: #8d8c85;
+        --s1: #3987e5;
+        --s2: #d95926;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --surface: #1a1a19;
+      --grid: #2a2a28;
+      --text-primary: #f0efec;
+      --text-secondary: #c3c2b7;
+      --text-muted: #8d8c85;
+      --s1: #3987e5;
+      --s2: #d95926;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--text-primary);
+      font: 14px/1.5 system-ui, -apple-system, sans-serif;
+    }
+
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .verdict {
+      margin: 0 0 20px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--text-muted);
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .verdict strong {
+      color: var(--text-primary);
+    }
+
+    table {
+      width: 100%;
+      margin-bottom: 24px;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th,
+    td {
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--grid);
+      text-align: right;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    th {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    td small {
+      display: block;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin: 0 0 4px;
+      padding: 0;
+      list-style: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 14px;
+      height: 2px;
+      margin-right: 6px;
+      vertical-align: 4px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    #chart {
+      position: relative;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    svg text {
+      fill: var(--text-muted);
+      font-size: 11px;
+    }
+
+    svg text.note {
+      fill: var(--text-secondary);
+    }
+
+    svg .grid {
+      stroke: var(--grid);
+      stroke-width: 1;
+    }
+
+    svg .launch {
+      stroke: var(--text-secondary);
+      stroke-width: 1;
+    }
+
+    svg .cross {
+      stroke: var(--text-muted);
+      stroke-width: 1;
+      display: none;
+    }
+
+    #tip {
+      position: fixed;
+      z-index: 5;
+      display: none;
+      min-width: 170px;
+      padding: 8px 10px;
+      border: 1px solid var(--grid);
+      border-radius: 6px;
+      background: var(--surface);
+      box-shadow: 0 4px 16px #0003;
+      pointer-events: none;
+      font-size: 12px;
+    }
+
+    #tip .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #tip .row b {
+      color: var(--text-primary);
+    }
+
+    #tip .head,
+    #tip .row span {
+      color: var(--text-secondary);
+    }
+
+    #tip .key {
+      display: inline-block;
+      width: 12px;
+      height: 2px;
+      margin-right: 6px;
+      vertical-align: 3px;
+    }
+
+    .foot {
+      margin-top: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .foot a {
+      color: inherit;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Did the recommender change who gained followers?</h1>
+    <p class="verdict" id="verdict"></p>
+
+    <table id="table"></table>
+
+    <ul class="legend" id="legend"></ul>
+    <h2>New followers per week (20 trending hubs vs 20 comparison accounts)</h2>
+    <div id="chart"></div>
+
+    <p class="foot">Method: difference in differences. Hubs are the 20 accounts of the original trending list; the
+      comparison group is the 20 largest accounts outside that list on 2023-04-15. Each count is the number of follows
+      written to the NEAR blockchain (contract social.near) in the week; the recommender launch (approx. 2023-11-07)
+      is dated from block heights and is approximate. The ratio compares the average after the launch to the average
+      before it, hubs divided by comparison; the range (wide, so a small effect cannot be excluded) is a bootstrap
+      over accounts, and the placebo values apply the same calculation to fake launch dates. No impression logs exist, so this measures follower growth, not who saw
+      a recommendation. <a href="./timeline.html">Weekly follows timeline</a> · <a href="./">Graph</a></p>
+  </main>
+  <div id="tip" role="status"></div>
+
+  <script>
+    const NS = 'http://www.w3.org/2000/svg';
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const SERIES = [{ key: 'hubs', label: 'Trending hubs', css: '--s1' }, { key: 'control', label: 'Comparison accounts', css: '--s2' }];
+    const tip = document.getElementById('tip');
+    const sign = n => (n < 0 ? '−' : '+') + Math.abs(n).toFixed(1);
+const pct = (a, b) => `${a >= b ? '+' : '−'}${Math.abs(Math.round((a / b - 1) * 100))} %`;
+    const share = v => `${(v * 100).toFixed(1)} %`;
+
+    const el = (tag, attrs = {}, parent) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      if (parent) parent.appendChild(node);
+      return node;
+    };
+
+    function text(parent, tag, content, className) {
+      const node = document.createElement(tag);
+      node.textContent = content;
+      if (className) node.className = className;
+      parent.appendChild(node);
+      return node;
+    }
+
+    function verdict(s) {
+      const p = document.getElementById('verdict');
+      p.replaceChildren();
+      const strong = document.createElement('strong');
+      strong.textContent = `After the launch the 20 trending hubs gained ${s.hubs.after} new followers in eight weeks against ${s.hubs.before} before (${pct(s.hubs.after, s.hubs.before)}), and 20 comparison accounts of similar size fell by about the same (${pct(s.control.after, s.control.before)}). `;
+      p.append(strong, document.createTextNode(
+        'The small gap between the two is within what fake launch dates produce, and new accounts followed a hub less often afterwards, so there is no measurable effect of the recommender on follower growth.'));
+    }
+
+    function table(s) {
+      const t = document.getElementById('table');
+      t.replaceChildren();
+      const head = t.createTHead().insertRow();
+      ['', '8 weeks before', '8 weeks after', 'Change'].forEach(h => text(head, 'th', h));
+      const body = t.createTBody();
+      const row = (label, a, b, change, note) => {
+        const r = body.insertRow();
+        const first = r.insertCell();
+        first.textContent = label;
+        if (note) text(first, 'small', note);
+        [a, b, change].forEach(v => { r.insertCell().textContent = v; });
+      };
+      row('New followers, 20 trending hubs', s.hubs.before, s.hubs.after, pct(s.hubs.after, s.hubs.before));
+      row('New followers, 20 comparison accounts', s.control.before, s.control.after, pct(s.control.after, s.control.before));
+      row('Hubs relative to comparison', '', '', `×${s.did.toFixed(2)}`,
+        `95 % range ${s.did_ci95[0].toFixed(2)} to ${s.did_ci95[1].toFixed(2)}; fake launch dates: median ${s.placebo.median.toFixed(2)}, ${s.placebo.min.toFixed(2)} to ${s.placebo.max.toFixed(2)}`);
+      row('New accounts following a hub in their first week', share(s.newcomers.hub.before), share(s.newcomers.hub.after), `${sign((s.newcomers.hub.after - s.newcomers.hub.before) * 100)} pts`,
+        `${s.newcomers.count.before.toLocaleString('en')} and ${s.newcomers.count.after.toLocaleString('en')} new accounts`);
+      row('… following a comparison account', share(s.newcomers.control.before), share(s.newcomers.control.after), `${sign((s.newcomers.control.after - s.newcomers.control.before) * 100)} pts`);
+    }
+
+    function chart(data) {
+      const host = document.getElementById('chart');
+      host.querySelector('svg')?.remove();
+      // the last week holds a single day (the snapshot ends on 2024-01-15), so it is left out
+      const weeks = data.weeks.filter(w => w.week >= '2023-08-14' && w.week <= '2024-01-08');
+      const launchWeek = weeks.findIndex(w => w.week >= data.summary.launch) - 1;  // week containing the launch day
+      const W = Math.max(320, host.clientWidth), H = 280, M = { l: 36, r: 110, t: 18, b: 24 };
+      const plotW = W - M.l - M.r, plotH = H - M.t - M.b;
+      const max = Math.max(...weeks.map(w => Math.max(w.hubs, w.control)));
+      const step = max > 50 ? 20 : max > 25 ? 10 : 5;
+      const top = Math.ceil(max / step) * step;
+      const x = i => M.l + (i + .5) * (plotW / weeks.length);
+      const y = v => M.t + plotH - (v / top) * plotH;
+      const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'New followers per week, hubs versus comparison accounts' });
+      host.appendChild(svg);
+
+      for (let v = 0; v <= top; v += step) {
+        el('line', { class: 'grid', x1: M.l, x2: W - M.r, y1: y(v), y2: y(v) }, svg);
+        el('text', { x: M.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, svg).textContent = v;
+      }
+      // the two eight-week windows compared in the table
+      [[launchWeek - 8, launchWeek, 'before'], [launchWeek, launchWeek + 8, 'after']].forEach(([a, b, name]) => {
+        if (a < 0) return;
+        const x0 = M.l + a * (plotW / weeks.length), x1 = M.l + Math.min(b, weeks.length) * (plotW / weeks.length);
+        el('rect', { x: x0, y: M.t, width: x1 - x0, height: plotH, style: 'fill: var(--text-primary); fill-opacity: .04' }, svg);
+        el('text', { class: 'note', x: (x0 + x1) / 2, y: M.t - 5, 'text-anchor': 'middle' }, svg).textContent = `${name} (8 weeks)`;
+      });
+      weeks.forEach((w, i) => {
+        const d = new Date(w.week);
+        if (d.getDate() <= 7) el('text', { x: x(i), y: H - 6, 'text-anchor': 'middle' }, svg).textContent = MONTHS[d.getMonth()];
+      });
+      const lx = x(launchWeek);
+      el('line', { class: 'launch', x1: lx, x2: lx, y1: M.t, y2: M.t + plotH }, svg);
+
+      SERIES.forEach(s => {
+        const pts = weeks.map((w, i) => `${i ? 'L' : 'M'}${x(i)},${y(w[s.key])}`).join('');
+        el('path', { d: pts, fill: 'none', style: `stroke: var(${s.css})`, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+        const last = weeks.length - 1;
+        el('circle', { cx: x(last), cy: y(weeks[last][s.key]), r: 4, style: `fill: var(${s.css}); stroke: var(--surface)`, 'stroke-width': 2 }, svg);
+      });
+      // end labels, nudged apart only when the two end values are close
+      const ends = SERIES.map(s => ({ s, v: weeks[weeks.length - 1][s.key] })).sort((a, b) => b.v - a.v);
+      ends.forEach((e, k) => el('text', { class: 'note', x: x(weeks.length - 1) + 10, y: y(e.v) + 4 + (k && Math.abs(y(ends[0].v) - y(e.v)) < 14 ? 14 : 0) }, svg).textContent = e.s.label);
+
+      const cross = el('line', { class: 'cross', y1: M.t, y2: M.t + plotH }, svg);
+      const hit = el('rect', { x: M.l, y: M.t, width: plotW, height: plotH, fill: 'transparent' }, svg);
+      const show = evt => {
+        const box = svg.getBoundingClientRect(), scale = W / box.width;
+        const i = Math.max(0, Math.min(weeks.length - 1, Math.floor(((evt.clientX - box.left) * scale - M.l) / (plotW / weeks.length))));
+        cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i)); cross.style.display = 'block';
+        tip.replaceChildren();
+        text(tip, 'div', `Week of ${weeks[i].week}`, 'head');
+        SERIES.forEach(s => {
+          const row = document.createElement('div');
+          row.className = 'row';
+          const left = document.createElement('span');
+          const key = document.createElement('i');
+          key.className = 'key';
+          key.style.background = `var(${s.css})`;
+          left.append(key, document.createTextNode(s.label));
+          const right = document.createElement('b');
+          right.textContent = weeks[i][s.key];
+          row.append(left, right);
+          tip.appendChild(row);
+        });
+        tip.style.display = 'block';
+        const tb = tip.getBoundingClientRect();
+        tip.style.left = `${Math.max(8, Math.min(evt.clientX + 14, innerWidth - tb.width - 8))}px`;
+        tip.style.top = `${Math.max(8, Math.min(evt.clientY + 14, innerHeight - tb.height - 8))}px`;
+      };
+      hit.addEventListener('pointermove', show);
+      hit.addEventListener('pointerleave', () => { tip.style.display = 'none'; cross.style.display = 'none'; });
+    }
+
+    fetch('./data/impact.json').then(r => r.json()).then(data => {
+      const legend = document.getElementById('legend');
+      SERIES.forEach(s => {
+        const li = document.createElement('li');
+        const key = document.createElement('i');
+        key.style.background = `var(${s.css})`;
+        li.append(key, document.createTextNode(s.label));
+        legend.appendChild(li);
+      });
+      verdict(data.summary);
+      table(data.summary);
+      chart(data);
+      let timer;
+      addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => chart(data), 100); });
+    });
+  </script>
+</body>
+
+</html>

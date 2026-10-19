@@ -93,6 +93,20 @@ Descriptive only. There was no control group, so none of this proves or disprove
 - **Almost nobody unfollowed.** Less than 0.3 % of follow edges disappeared between snapshots. Writing to the chain
   cost money, which plausibly kept casual activity down.
 
+## Did the recommender change who gained followers?
+
+![New followers per week, trending hubs versus comparison accounts](docs/images/impact.jpg)
+
+After the launch the 20 trending hubs gained 136 new followers in eight weeks against 244 before (-44 %), and 20
+comparison accounts of similar size fell by about the same (-56 %). The small gap between the two is within what fake
+launch dates produce, and new accounts followed a hub less often afterwards (5.5 % against 3.7 %), so there is no
+measurable effect of the recommender on follower growth; a small effect cannot be excluded.
+
+The comparison group is the 20 largest accounts outside the hub list on 2023-04-15, which the trending rule would not
+have pushed. Details, table and method are on [impact.html](impact.html); the calculation is `pipeline/impact.py`
+(difference in differences with a bootstrap over accounts and placebo launch dates). There are no impression logs, so
+this measures follower growth, not who saw a recommendation.
+
 ## Replaying the bootcamp recommender ideas
 
 How well would the ideas of the bootcamp repository have predicted the follows that really happened? This is not a
@@ -154,6 +168,7 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
 | Path | Content |
 |---|---|
 | `index.html` | 3D graph (three.js via 3d-force-graph, all CDN versions pinned) with a snapshot switcher |
+| `impact.html` | did the recommender change who gained followers: table, chart, two sentences |
 | `timeline.html` | weekly follows and bridge events, plain SVG, light and dark theme, table view |
 | `trending_users.json` | the original dataset from spring 2023 |
 | `data/raw/follows_<date>.json` | follow graph snapshots: `{block, label, follows: {account: [followed, ...]}}` |
@@ -162,10 +177,11 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
 | `data/timeline.json`, `data/edges_bh_2024-01-15.json` | weekly series and the follow creation block heights behind it |
 | `data/raw/stored_recommendations_2023-04-26.json` | the saved recommendations of the bootcamp repository (account to 15 accounts, best first) |
 | `data/evaluation.json` | hold-out results of the recommendation replay |
+| `data/impact.json` | weekly new followers of hubs and comparison accounts, and the difference-in-differences summary |
 | `pipeline/` | the scripts, see [pipeline/README.md](pipeline/README.md) |
 
 To run it locally: `python3 -m http.server`, then open http://localhost:8000. To regenerate the derived data from the
-snapshots: `python3 pipeline/cascade.py`, `python3 pipeline/timeline.py` and `python3 pipeline/evaluate.py` (needs numpy).
+snapshots: `python3 pipeline/cascade.py`, `python3 pipeline/timeline.py` and `python3 pipeline/evaluate.py` and `python3 pipeline/impact.py` (needs numpy).
 
 ## License
 

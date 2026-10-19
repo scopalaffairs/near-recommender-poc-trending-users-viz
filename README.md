@@ -85,6 +85,47 @@ Descriptive only. There was no control group, so none of this proves or disprove
 - **Almost nobody unfollowed.** Less than 0.3 % of follow edges disappeared between snapshots. Writing to the chain
   cost money, which plausibly kept casual activity down.
 
+## Replaying the original recommender ideas
+
+How well would the ideas of the original repository have predicted the follows that really happened? For a time
+window, the graph at the start is rebuilt, every method recommends accounts per user, and a user counts as a hit if
+at least one recommended account was followed within the window (`pipeline/evaluate.py`, results in
+`data/evaluation.json`). Users are existing accounts that made a new follow in the window (669 before the launch, 715
+after). The windows differ in length (2023-04-26 to 2023-10-31 versus 2023-11-07 to 2024-01-15), so compare methods
+within a window, not rates across windows.
+
+| Hit rate, 5 recommendations per user | before launch | after launch |
+|---|---|---|
+| friends of friends (2-hop) | 32.3 % | 12.3 % |
+| HITS authority | 29.8 % | 8.0 % |
+| most followed (popularity) | 28.4 % | 6.7 % |
+| trending hubs outside the user's community | 11.6 % | 2.8 % |
+| random accounts | 2.5 % | 0.2 % |
+
+The saved recommendations of the original repository (`matrix_intersection_05.json`, 15 per user, committed
+2023-04-26; here `data/raw/stored_recommendations_2023-04-26.json`) were tested on the 640 of their users that made a
+new follow before the launch: 25.0 % hit with all 15 and 18.3 % with the top 5. Plain popularity reaches 38.6 % and
+28.1 % for the same users. The lists were hardly personalized: `gilberth.near` was in 3,495 of the 3,499 lists.
+
+For accounts that appear for the first time in the window, which is the case the original rule handled with trending
+users (accounts younger than 7 days):
+
+| | before launch | after launch |
+|---|---|---|
+| new accounts in the window | 3,763 | 1,351 |
+| follow at least one of the 20 hubs | 16.6 % | 4.6 % |
+| follow hubs of two or more communities | 2.4 % | 0.07 % |
+| top-5 most followed accounts would hit | 14.3 % | 3.1 % |
+| 5 random hubs would hit | 5.5 % | 1.3 % |
+
+What this says: suggesting accounts from another community is the mixing idea of the project, and it is exactly what
+users are least likely to follow on their own (11.6 % against 32.3 % for friends of friends). In the repository's final
+`recommender.py` the friends-of-friends call is commented out, so the best-scoring idea was not served from there.
+
+Limits of this test: it measures agreement with organic follows, not whether users saw or acted on a suggestion
+(there are no impression logs). The trending list is the April 2023 cohort, not a list recomputed at launch. Friends
+of friends is the classic 2-hop count here, not the XGBoost model of the original code.
+
 ## Limitations
 
 - **No control group, no causal claim.** Between April 2023 and January 2024 there were also the near.org relaunch,
@@ -110,10 +151,12 @@ Descriptive only. There was no control group, so none of this proves or disprove
 | `data/trending_users_<date>.json` | cohort graph per snapshot (nodes carry HITS `auth` / `hub`, and `bridge`) |
 | `data/metrics.json` | mixing metrics and isolated clusters per snapshot |
 | `data/timeline.json`, `data/edges_bh_2024-01-15.json` | weekly series and the follow creation block heights behind it |
+| `data/raw/stored_recommendations_2023-04-26.json` | the saved recommendations of the original repository (account to 15 accounts, best first) |
+| `data/evaluation.json` | hold-out results of the recommendation replay |
 | `pipeline/` | the scripts, see [pipeline/README.md](pipeline/README.md) |
 
 To run it locally: `python3 -m http.server`, then open http://localhost:8000. To regenerate the derived data from the
-snapshots: `python3 pipeline/cascade.py` and `python3 pipeline/timeline.py` (needs numpy).
+snapshots: `python3 pipeline/cascade.py`, `python3 pipeline/timeline.py` and `python3 pipeline/evaluate.py` (needs numpy).
 
 ## License
 

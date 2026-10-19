@@ -66,7 +66,7 @@
   <div id="panel">
     <div id="buttons"></div>
     <div id="stats"></div>
-    <a id="timeline-link" href="./timeline.html">Zeitverlauf der Follows →</a>
+    <a id="timeline-link" href="./timeline.html">Weekly follows timeline →</a>
   </div>
   <div id="graph"></div>
 
@@ -76,10 +76,10 @@
 
     // Original dataset plus follow-graph snapshots of the same 20 anchor accounts (see pipeline/).
     const SNAPSHOTS = [
-      { label: 'Original (Frühjahr 2023)', file: './trending_users.json' },
-      { label: '15.04.2023 – vor Recommender', file: './data/trending_users_2023-04-15.json' },
-      { label: '31.10.2023 – kurz vor Launch', file: './data/trending_users_2023-10-31.json' },
-      { label: '15.01.2024 – nach Recommender', file: './data/trending_users_2024-01-15.json' },
+      { label: 'Original dataset (spring 2023)', file: './trending_users.json' },
+      { label: '2023-04-15 · before recommender', file: './data/trending_users_2023-04-15.json' },
+      { label: '2023-10-31 · just before launch', file: './data/trending_users_2023-10-31.json' },
+      { label: '2024-01-15 · after recommender', file: './data/trending_users_2024-01-15.json' },
     ];
 
     // Community colors: 0 Aurora, 1 Root-Userbase, 4 Mintbase/NDC, 5 JumpDeFi/Neko, 9 NEARxART
@@ -133,8 +133,8 @@
       const bridges = data.nodes.filter(node => node.bridge).length;
       graph.graphData(data);
       [...buttons.children].forEach((button, i) => button.classList.toggle('active', i === index));
-      stats.innerHTML = `${data.nodes.length} Knoten · ${data.links.length} Kanten`
-        + (bridges ? `<br>${bridges} Brücken-Accounts (golden), folgen ≥ 2 Communities` : '');
+      stats.innerHTML = `${data.nodes.length} nodes · ${data.links.length} links`
+        + (bridges ? `<br>${bridges} bridge accounts (gold) follow ≥ 2 communities` : '');
     }
 
     SNAPSHOTS.forEach((snapshot, i) => {

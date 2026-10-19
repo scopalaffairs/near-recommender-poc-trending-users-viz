@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEAR Social Zeitverlauf</title>
+  <title>NEAR Social timeline</title>
   <style>
     :root {
       color-scheme: light;
@@ -258,25 +258,24 @@
 
 <body>
   <main>
-    <h1>Neue Follows pro Woche, vor und nach dem Recommender</h1>
-    <p class="sub">Neue Follow-Kanten auf die 20 Hub-Accounts, nach Community, 2023 bis Januar 2024.</p>
+    <h1>New follows per week, before and after the recommender</h1>
+    <p class="sub">New follow edges into the 20 hub accounts, by community, January 2023 to January 2024.</p>
     <p class="verdict" id="verdict"></p>
 
     <ul class="legend" id="legend"></ul>
     <div class="chart" id="c1">
-      <h2>Neue Follows auf die Hubs (Kanten pro Woche)</h2>
+      <h2>New follows into the hubs (edges per week)</h2>
     </div>
     <div class="chart" id="c2">
-      <h2>Brücken-Ereignisse: ein Account folgt erstmals einer zweiten Community (pro Woche)</h2>
+      <h2>Bridge events: an account follows a second community for the first time (per week)</h2>
     </div>
 
-    <button id="toggle" aria-expanded="false">Tabelle anzeigen</button>
+    <button id="toggle" aria-expanded="false">Show table</button>
     <table id="table"></table>
 
-    <p class="foot">Quelle: öffentliche NEAR-Blockchain, Kontrakt social.near (Follow-Graph). Zeitpunkte aus Block-Höhen
-      interpoliert (± wenige Tage). Nur Kanten, die am 15.01.2024 noch bestehen; Unfollows waren unter 0,5 %.
-      Launch-Datum des Recommenders ist ungefähr (NEARCon, November 2023). Beschreibend, nicht kausal: es gab keine
-      Kontrollgruppe.</p>
+    <p class="foot">Source: public NEAR blockchain, contract social.near (follow graph). Dates are interpolated from block
+      heights (± a few days). Only edges still present on 2024-01-15; unfollows were below 0.5 %. The recommender's
+      launch date is approximate (NEARCon, November 2023). Descriptive, not causal: there was no control group.</p>
   </main>
   <div id="tip" role="status"></div>
 
@@ -286,9 +285,9 @@
       { key: 'Aurora', css: '--s2' },
       { key: 'Mintbase/NDC', css: '--s3' },
       { key: 'JumpDeFi/Neko', css: '--s4' },
-      { key: 'NEARxART', css: '--s-other', label: 'Sonstige (NEARxART)' },
+      { key: 'NEARxART', css: '--s-other', label: 'Other (NEARxART)' },
     ];
-    const MONTHS = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const NS = 'http://www.w3.org/2000/svg';
     const tip = document.getElementById('tip');
 
@@ -325,11 +324,11 @@
       };
       const head = document.createElement('div');
       head.className = 'head';
-      head.textContent = `Woche ab ${week.week}`;
+      head.textContent = `Week of ${week.week}`;
       tip.appendChild(head);
-      row('Neue Follows gesamt', week.total);
+      row('New follows, total', week.total);
       SERIES.forEach(s => row(s.label || s.key, week.edges[s.key], s.css));
-      row('Brücken-Ereignisse', week.bridge_events, '--s-bridge');
+      row('Bridge events', week.bridge_events, '--s-bridge');
       tip.style.display = 'block';
       const box = tip.getBoundingClientRect();
       const x = Math.min(evt.clientX + 14, innerWidth - box.width - 8);
@@ -379,7 +378,7 @@
             el('path', { d: column(x, y0, bw, y(0) - y0, 4), style: 'fill: var(--s-bridge)' }, svg);
           }
           const hit = el('rect', { class: 'hit', x: M.l + i * slot, y: M.t, width: slot, height: plotH, tabindex: 0,
-            'aria-label': `Woche ab ${w.week}: ${w.total} neue Follows, ${w.bridge_events} Brücken-Ereignisse` }, svg);
+            'aria-label': `Week of ${w.week}: ${w.total} new follows, ${w.bridge_events} bridge events` }, svg);
           hit.addEventListener('pointermove', e => showTip(w, e));
           hit.addEventListener('pointerleave', hideTip);
           hit.addEventListener('focus', () => { const b = hit.getBoundingClientRect(); showTip(w, { clientX: b.left, clientY: b.top }); });
@@ -395,14 +394,14 @@
           el('line', { class: 'launch', x1: lx, x2: lx, y1: M.t - 4, y2: M.t + plotH }, svg);
           if (id === 'c1') {
             const t = el('text', { class: 'note', x: lx - 6, y: M.t + 6, 'text-anchor': 'end' }, svg);
-            t.textContent = 'Recommender-Launch (ca. Nov 2023)';
+            t.textContent = 'Recommender launch (approx. Nov 2023)';
           }
         }
         if (id === 'c1') {
           // One selective direct label: the campaign peak that dominates the early weeks.
           const pk = weeks.reduce((a, b, i) => (b.total > weeks[a].total ? i : a), 0);
           const t = el('text', { class: 'note', x: M.l + pk * slot + slot + 4, y: y(weeks[pk].total) + 10 }, svg);
-          t.textContent = `${weeks[pk].total} · Aurora-Kampagne`;
+          t.textContent = `${weeks[pk].total} · Aurora campaign`;
         }
       });
     }
@@ -412,23 +411,23 @@
       const avg = ws => ws.reduce((a, w) => a + w.total, 0) / ws.length;
       const bavg = ws => ws.reduce((a, w) => a + w.bridge_events, 0) / ws.length;
       const before = data.weeks.slice(idx - 8, idx), after = data.weeks.slice(idx, idx + 8);
-      const f = n => n.toFixed(1).replace('.', ',');
+      const f = n => n.toFixed(1);
       const p = document.getElementById('verdict');
       p.replaceChildren();
       const strong = document.createElement('strong');
       const rose = avg(after) > avg(before) * 1.1;
-      strong.textContent = rose ? 'Anstieg nach dem Launch. ' : 'Kein Anstieg nach dem Launch. ';
+      strong.textContent = rose ? 'Increase after the launch. ' : 'No increase after the launch. ';
       p.append(strong, document.createTextNode(
-        `Acht Wochen vor dem Launch kamen im Schnitt ${f(avg(before))} neue Follows pro Woche auf die Hubs, `
-        + `acht Wochen danach ${f(avg(after))}; Brücken-Ereignisse: ${f(bavg(before))} gegen ${f(bavg(after))} pro Woche. `
-        + (rose ? '' : 'Der Rückgang begann schon im Frühjahr 2023, nach den Kampagnen von Aurora und JumpDeFi.')));
+        `In the eight weeks before the launch the hubs gained ${f(avg(before))} new follows per week on average, `
+        + `in the eight weeks after ${f(avg(after))}; bridge events: ${f(bavg(before))} versus ${f(bavg(after))} per week. `
+        + (rose ? '' : 'The decline had already started in spring 2023, after the Aurora and JumpDeFi campaigns.')));
     }
 
     function table(data) {
       const t = document.getElementById('table');
       t.replaceChildren();
       const head = t.createTHead().insertRow();
-      ['Woche ab', 'Gesamt', ...SERIES.map(s => s.label || s.key), 'Brücken'].forEach(h => {
+      ['Week of', 'Total', ...SERIES.map(s => s.label || s.key), 'Bridges'].forEach(h => {
         const th = document.createElement('th');
         th.textContent = h;
         head.appendChild(th);
@@ -442,7 +441,7 @@
 
     fetch('./data/timeline.json').then(r => r.json()).then(data => {
       const legend = document.getElementById('legend');
-      [...SERIES, { label: 'Brücken-Ereignisse', css: '--s-bridge' }].forEach(s => {
+      [...SERIES, { label: 'Bridge events', css: '--s-bridge' }].forEach(s => {
         const li = document.createElement('li');
         const sw = document.createElement('i');
         sw.style.background = `var(${s.css})`;
@@ -458,7 +457,7 @@
 
     document.getElementById('toggle').addEventListener('click', e => {
       const on = document.getElementById('table').classList.toggle('on');
-      e.target.textContent = on ? 'Tabelle ausblenden' : 'Tabelle anzeigen';
+      e.target.textContent = on ? 'Hide table' : 'Show table';
       e.target.setAttribute('aria-expanded', on);
     });
   </script>

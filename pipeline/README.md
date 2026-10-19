@@ -21,11 +21,14 @@ Limitation: the account list is from today, so accounts that have since removed 
 (same schema as `trending_users.json`, plus per node `auth`/`hub` = HITS scores and `bridge: true` for
 accounts following anchors of two or more communities) and writes `data/metrics.json`.
 
-The anchor cohort (20 hubs and their community groups) is taken from the original `trending_users.json`
-and held fixed over all snapshots, so before/after compare the same accounts. The original hub selection
-rule is not recoverable: it is not HITS rank, in-degree or recent follower growth (checked against the
-2023-04-15 graph); `scopalaffairs.near` with 4 followers shows it was partly hand-picked. Reproduction check
-for 2023-04-15 against the original file: 96 % of nodes, 93 % of edges.
+The anchor cohort (the 20 hubs and their community groups) is taken from the original `trending_users.json` and
+held fixed over all snapshots, so before/after compare the same accounts. In the original pipeline the 20 hubs were most likely
+the top trending users (inferred from the original code, not verified against its output), ranked by weighted 30-day engagement divided by weighted 30-day activity (see the top-level
+README), and the groups were Louvain communities. That ranking is not recomputed here: it needs post, like and comment
+history, which SocialDB does not keep (only the latest value per key). For the original SQL see
+`near_recommender/src/data/queries/query_user_metrics.py` in the original repository. The choice of hubs is also not
+a HITS rank, in-degree or recent follower growth (checked against the 2023-04-15 graph). Reproduction check for
+2023-04-15 against the original file: 96 % of nodes, 93 % of edges.
 
 `metrics.json` also lists isolated clusters per snapshot (non-root-userbase accounts with >= 25 followers
 who follow nobody in the root userbase). These are not part of the cohort graphs, so clusters that only

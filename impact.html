@@ -15,6 +15,7 @@
       --text-muted: #7b7a75;
       --s1: #2a78d6;
       --s2: #eb6834;
+      --s3: #1baf7a;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -27,6 +28,7 @@
         --text-muted: #8d8c85;
         --s1: #3987e5;
         --s2: #d95926;
+        --s3: #199e70;
       }
     }
 
@@ -39,6 +41,7 @@
       --text-muted: #8d8c85;
       --s1: #3987e5;
       --s2: #d95926;
+      --s3: #199e70;
     }
 
     * {
@@ -53,7 +56,7 @@
     }
 
     main {
-      max-width: 880px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 24px 16px 48px;
     }
@@ -125,6 +128,20 @@
       vertical-align: 4px;
     }
 
+    #table2 td {
+      white-space: nowrap;
+    }
+
+    #table2 th {
+      vertical-align: bottom;
+    }
+
+    h2.section {
+      margin: 32px 0 12px;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
     h2 {
       margin: 0;
       font-size: 13px;
@@ -132,7 +149,8 @@
       color: var(--text-secondary);
     }
 
-    #chart {
+    #chart,
+    #chart2 {
       position: relative;
     }
 
@@ -226,6 +244,12 @@
     <ul class="legend" id="legend"></ul>
     <h2>New followers per week (20 trending hubs vs 20 comparison accounts)</h2>
     <div id="chart"></div>
+
+    <h2 class="section">Second test: the platform relaunch (August 2023, exact day unknown)</h2>
+    <p class="verdict" id="verdict2"></p>
+    <table id="table2"></table>
+    <h2>New accounts per week (accounts whose first follow falls into the week)</h2>
+    <div id="chart2"></div>
 
     <p class="foot">Method: difference in differences. Hubs are the 20 accounts of the original trending list; the
       comparison group is the 20 largest accounts outside that list on 2023-04-15. Each count is the number of follows
@@ -366,6 +390,85 @@ const pct = (a, b) => `${a >= b ? '+' : '−'}${Math.abs(Math.round((a / b - 1) 
       hit.addEventListener('pointerleave', () => { tip.style.display = 'none'; cross.style.display = 'none'; });
     }
 
+    const median = values => { const v = [...values].sort((a, b) => a - b); return (v[(v.length - 1) >> 1] + v[v.length >> 1]) / 2; };
+    const range = (data, from, to) => data.weeks.filter(w => w.week >= from && w.week <= to).map(w => w.new_accounts);
+
+    function platform(data) {
+      const s = data.summary;
+      const ratios = s.platform_relaunch.map(p => p.did);
+      const inflow = [['2023-07-10', '2023-08-14'], ['2023-08-28', '2023-09-25'], ['2023-10-02', '2023-10-30']].map(([a, b]) => median(range(data, a, b)));
+      const p = document.getElementById('verdict2');
+      p.replaceChildren();
+      const strong = document.createElement('strong');
+      strong.textContent = `Hubs relative to the comparison accounts show nothing at any August date (ratios ${Math.min(...ratios).toFixed(2)} to ${Math.max(...ratios).toFixed(2)}, every range includes 1). `;
+      p.append(strong, document.createTextNode(
+        `New accounts per week were at a median of ${inflow[0]} from 10 July to 14 August, ${inflow[1]} from 28 August to 25 September and ${inflow[2]} from 2 October to 30 October: a step up in the second half of August that fits a platform relaunch then, and a fall back after the recommender launch. The relaunch date is not confirmed and single weeks are campaign spikes, so this is a pattern, not a measured effect.`));
+
+      const t = document.getElementById('table2');
+      t.replaceChildren();
+      const head = t.createTHead().insertRow();
+      ['Possible relaunch date', 'Window (weeks)', 'Hubs, before to after', 'Comparison, before to after', 'Hubs relative (95 % range)', 'New accounts per week'].forEach(h => text(head, 'th', h));
+      const body = t.createTBody();
+      s.platform_relaunch.forEach(r => {
+        const row = body.insertRow();
+        [r.date, r.weeks, `${r.hubs[0]} to ${r.hubs[1]}`, `${r.control[0]} to ${r.control[1]}`,
+          `×${r.did.toFixed(2)} (${r.did_ci95[0].toFixed(2)} to ${r.did_ci95[1].toFixed(2)})`,
+          `${Math.round(r.new_accounts_per_week[0])} to ${Math.round(r.new_accounts_per_week[1])}`].forEach(v => { row.insertCell().textContent = v; });
+      });
+      const rec = body.insertRow();
+      ['Recommender launch, for comparison', s.weeks, `${s.hubs.before} to ${s.hubs.after}`, `${s.control.before} to ${s.control.after}`,
+        `×${s.did.toFixed(2)} (${s.did_ci95[0].toFixed(2)} to ${s.did_ci95[1].toFixed(2)})`,
+        `${Math.round(s.new_accounts_per_week_recommender[0])} to ${Math.round(s.new_accounts_per_week_recommender[1])}`].forEach(v => { rec.insertCell().textContent = v; });
+      rec.style.fontWeight = '600';
+    }
+
+    function chart2(data) {
+      const host = document.getElementById('chart2');
+      host.querySelector('svg')?.remove();
+      const weeks = data.weeks.filter(w => w.week >= '2023-07-03' && w.week <= '2023-11-27');
+      const idx = day => weeks.findIndex(w => w.week >= day);
+      const launchWeek = idx(data.summary.launch);
+      const W = Math.max(320, host.clientWidth), H = 220, M = { l: 36, r: 8, t: 22, b: 24 };
+      const plotW = W - M.l - M.r, plotH = H - M.t - M.b, slot = plotW / weeks.length, bw = Math.min(24, slot - 2);
+      const max = Math.max(...weeks.map(w => w.new_accounts));
+      const step = max > 200 ? 100 : 50, top = Math.ceil(max / step) * step;
+      const y = v => M.t + plotH - (v / top) * plotH;
+      const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'New accounts per week' });
+      host.appendChild(svg);
+      for (let v = 0; v <= top; v += step) {
+        el('line', { class: 'grid', x1: M.l, x2: W - M.r, y1: y(v), y2: y(v) }, svg);
+        el('text', { x: M.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, svg).textContent = v;
+      }
+      const a = idx('2023-07-31'), b = idx('2023-08-28') + 1;
+      el('rect', { x: M.l + a * slot, y: M.t, width: (b - a) * slot, height: plotH, style: 'fill: var(--text-primary); fill-opacity: .06' }, svg);
+      el('text', { class: 'note', x: M.l + (a + b) / 2 * slot, y: M.t - 7, 'text-anchor': 'middle' }, svg).textContent = 'August: possible relaunch';
+      weeks.forEach((w, i) => {
+        const x = M.l + i * slot + (slot - bw) / 2, h = plotH - (y(w.new_accounts) - M.t);
+        el('path', { d: `M${x},${y(0)}V${y(w.new_accounts) + 4}Q${x},${y(w.new_accounts)} ${x + 4},${y(w.new_accounts)}H${x + bw - 4}Q${x + bw},${y(w.new_accounts)} ${x + bw},${y(w.new_accounts) + 4}V${y(0)}Z`, style: 'fill: var(--s3)' }, svg);
+        const hit = el('rect', { class: 'hit', x: M.l + i * slot, y: M.t, width: slot, height: plotH, fill: 'transparent' }, svg);
+        const showTip = evt => {
+          tip.replaceChildren();
+          text(tip, 'div', `Week of ${w.week}`, 'head');
+          const row = document.createElement('div');
+          row.className = 'row';
+          text(row, 'span', 'New accounts');
+          text(row, 'b', w.new_accounts);
+          tip.appendChild(row);
+          tip.style.display = 'block';
+          const tb = tip.getBoundingClientRect();
+          tip.style.left = `${Math.max(8, Math.min(evt.clientX + 14, innerWidth - tb.width - 8))}px`;
+          tip.style.top = `${Math.max(8, Math.min(evt.clientY + 14, innerHeight - tb.height - 8))}px`;
+        };
+        hit.addEventListener('pointermove', showTip);
+        hit.addEventListener('pointerleave', () => { tip.style.display = 'none'; });
+        const d = new Date(w.week);
+        if (d.getDate() <= 7) el('text', { x: M.l + i * slot + slot / 2, y: H - 6, 'text-anchor': 'middle' }, svg).textContent = MONTHS[d.getMonth()];
+      });
+      const lx = M.l + launchWeek * slot + slot / 2;
+      el('line', { class: 'launch', x1: lx, x2: lx, y1: M.t, y2: M.t + plotH }, svg);
+      el('text', { class: 'note', x: lx + 6, y: M.t + 10 }, svg).textContent = 'Recommender launch';
+    }
+
     fetch('./data/impact.json').then(r => r.json()).then(data => {
       const legend = document.getElementById('legend');
       SERIES.forEach(s => {
@@ -378,8 +481,10 @@ const pct = (a, b) => `${a >= b ? '+' : '−'}${Math.abs(Math.round((a / b - 1) 
       verdict(data.summary);
       table(data.summary);
       chart(data);
+      platform(data);
+      chart2(data);
       let timer;
-      addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => chart(data), 100); });
+      addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => { chart(data); chart2(data); }, 100); });
     });
   </script>
 </body>

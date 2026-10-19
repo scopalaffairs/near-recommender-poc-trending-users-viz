@@ -31,8 +31,8 @@ According to the project author, the timeline was: research in spring 2023 (Goog
 bootcamp the author was hired as a freelancer and worked on it full-time from September 2023, improved all three
 methods and handed over the complete package. The author kept no copy of that final code, so the bootcamp repository
 is the only code that survives. The recommender went live
-in early October 2023. The near.org platform, relaunched in August 2023, was shut
-down in March 2024.
+in early October 2023. The near.org platform, a new interface that replaced the dated
+near.social front end in August 2023, was shut down in March 2024.
 
 This repository is not that launched system. It rebuilds the network data around it from the public chain, and it
 replays the ideas of the bootcamp code (below).
@@ -111,6 +111,16 @@ have pushed. Details, table and method are on [impact.html](impact.html); the ca
 (difference in differences with a bootstrap over accounts and placebo launch dates). There are no impression logs, so
 this measures follower growth, not who saw a recommendation.
 
+### Second test: the interface relaunch (near.org)
+
+![Test at possible relaunch dates and new accounts per week](docs/images/impact-platform.jpg)
+
+The same hub-against-comparison test at any Monday in August 2023 shows nothing (ratios 1.03 to 1.81, every 95 % range
+includes 1), but new accounts per week stepped up in the second half of August (median 99 per week from 10 July to
+14 August, 215 from 28 August to 25 September) and fell back after the recommender launch (89 per week in October).
+That fits a relaunch of the interface in late August, but the exact day is not confirmed (see the limitations), single weeks
+are campaign spikes, and a pattern in the same data that was used to look for it is not a measured effect.
+
 ## Replaying the bootcamp recommender ideas
 
 How well would the ideas of the bootcamp repository have predicted the follows that really happened? This is not a
@@ -165,10 +175,14 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
   would need transaction data (for example NEAR Lake or the public BigQuery dataset).
 - **Only follow edges still present are seen.** The account list comes from today's follow keys
   (`api.near.social`), so accounts that have since removed every follow are missing.
-- **"Launch" always means the recommender**, dated approximately to early October 2023. The switch of the platform
-  from near.social to near.org (August 2023, per the author) is a separate event that is not modeled; both used the
-  same `social.near` data, so the chain data is continuous across it. The eight weeks before the launch (from
-  2023-08-07) overlap the weeks after that relaunch.
+- **"Launch" always means the recommender**, dated approximately to early October 2023. The relaunch of the
+  platform's interface (near.org, a new front end replacing near.social in August 2023, per the author) is a separate
+  event and gets its own test; both show the same `social.near` data, so the chain data is continuous across it. The
+  eight weeks before the recommender launch (from 2023-08-07) overlap the weeks after that relaunch. No public source
+  for the exact relaunch day was found, so the second test runs for every Monday in August. (The Blockchain Operating
+  System, the technology under near.org, was announced earlier, in March 2023, see
+  [The Paypers, 2023-03-06](https://thepaypers.com/cryptocurrencies/near-launches-the-blockchain-operating-system--1261648);
+  that is a different event.)
 - **Block heights to dates** are interpolated between blocks with exactly known timestamps (error of a few days).
 
 ## Repository layout
@@ -176,7 +190,7 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
 | Path | Content |
 |---|---|
 | `index.html` | 3D graph (three.js via 3d-force-graph, all CDN versions pinned) with a snapshot switcher |
-| `impact.html` | did the recommender change who gained followers: table, chart, two sentences |
+| `impact.html` | did the recommender (and the platform relaunch) change who gained followers: tables, charts, short summaries |
 | `timeline.html` | weekly follows and bridge events, plain SVG, light and dark theme, table view |
 | `trending_users.json` | the original dataset from spring 2023 |
 | `data/raw/follows_<date>.json` | follow graph snapshots: `{block, label, follows: {account: [followed, ...]}}` |

@@ -4,6 +4,8 @@ Treated: the 20 hubs of the original trending list (the accounts a "trending use
 Control: the 20 largest accounts outside that list on 2023-04-15, not recommended by that rule.
 Outcome: new followers per week (from the block height at which each follow was written).
 Statistic: ratio of the weekly average after the launch to the average before it, treated divided by control.
+The same test is repeated for possible dates of the near.org platform relaunch ("August 2023", exact day unknown),
+together with the weekly number of new accounts (accounts whose first follow falls into the week).
 A ratio above 1 means the hubs gained relative to the control; the same statistic is computed for placebo
 launch dates to show how large the ratio is by chance. Needs data/edges_bh_2024-01-15.json; run from the repo root.
 """
@@ -144,9 +146,38 @@ def main():
     summary['conversion_aurora_to_other'] = {
         'before': conversion('2023-04-15', LAUNCH, months_pre), 'after': conversion(LAUNCH, '2024-01-15', months_post)}
 
+    # second event: the platform relaunch, "August 2023" (exact day unknown). The same test is run for each Monday in
+    # August; the window is shortened so that the "after" period ends before the recommender launch.
+    def new_accounts_per_week(first, last):
+        return sum(1 for d0 in first_seen.values() if first <= week_index(d0) < last) / max(1, last - first)
+
+    platform = []
+    for day in ('2023-08-07', '2023-08-14', '2023-08-21', '2023-08-28'):
+        at = week_index(datetime.date.fromisoformat(day))
+        w = min(WEEKS, launch - at)
+        boots_p = []
+        rng_p = random.Random(2)
+        for _ in range(2000):
+            idx = ([rng_p.randrange(20) for _ in range(20)], [rng_p.randrange(20) for _ in range(20)])
+            v = did(at, w, idx)
+            if not math.isnan(v) and v > 0:
+                boots_p.append(math.log(v))
+        boots_p.sort()
+        platform.append({
+            'date': day, 'weeks': w,
+            'hubs': [sum(sum(g[at - w:at]) for g in treated), sum(sum(g[at:at + w]) for g in treated)],
+            'control': [sum(sum(g[at - w:at]) for g in control), sum(sum(g[at:at + w]) for g in control)],
+            'did': round(did(at, w), 3),
+            'did_ci95': [round(math.exp(boots_p[int(.025 * len(boots_p))]), 3), round(math.exp(boots_p[int(.975 * len(boots_p))]), 3)],
+            'new_accounts_per_week': [round(new_accounts_per_week(at - w, at), 1), round(new_accounts_per_week(at, at + w), 1)],
+        })
+    summary['platform_relaunch'] = platform
+    summary['new_accounts_per_week_recommender'] = [round(new_accounts_per_week(launch - WEEKS, launch), 1), round(new_accounts_per_week(launch, launch + WEEKS), 1)]
+
     out = {'summary': summary, 'placebo_by_week': placebo_by_week, 'weeks': [
         {'week': (datetime.date(2023, 1, 2) + datetime.timedelta(weeks=w)).isoformat(),
-         'hubs': sum(g[w] for g in treated), 'control': sum(g[w] for g in control)}
+         'hubs': sum(g[w] for g in treated), 'control': sum(g[w] for g in control),
+         'new_accounts': sum(1 for d0 in first_seen.values() if week_index(d0) == w)}
         for w in range(n_weeks)]}
     json.dump(out, open('data/impact.json', 'w'), separators=(',', ':'))
     print(json.dumps(summary, indent=1))

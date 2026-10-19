@@ -265,7 +265,7 @@ const pct = (a, b) => `${a >= b ? '+' : '−'}${Math.abs(Math.round((a / b - 1) 
       const p = document.getElementById('verdict');
       p.replaceChildren();
       const strong = document.createElement('strong');
-      strong.textContent = `After the launch the 20 trending hubs gained ${s.hubs.after} new followers in eight weeks against ${s.hubs.before} before (${pct(s.hubs.after, s.hubs.before)}), and 20 comparison accounts of similar size fell by about the same (${pct(s.control.after, s.control.before)}). `;
+      strong.textContent = `After the recommender launch (approx. November 2023) the 20 trending hubs gained ${s.hubs.after} new followers in eight weeks against ${s.hubs.before} before (${pct(s.hubs.after, s.hubs.before)}), and 20 comparison accounts of similar size fell by about the same (${pct(s.control.after, s.control.before)}). `;
       p.append(strong, document.createTextNode(
         'The small gap between the two is within what fake launch dates produce, and new accounts followed a hub less often afterwards, so there is no measurable effect of the recommender on follower growth.'));
     }

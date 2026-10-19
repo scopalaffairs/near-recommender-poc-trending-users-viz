@@ -83,6 +83,7 @@ def main():
     real = did(launch)
     rank = sum(1 for v in placebo.values() if v <= real) / len(placebo)
 
+    placebo_by_week = {(datetime.date(2023, 1, 2) + datetime.timedelta(weeks=at)).isoformat(): round(v, 2) for at, v in placebo.items()}
     summary = {
         'launch': LAUNCH, 'weeks': WEEKS,
         'hubs': {'accounts': len(hubs), 'before': sum(sum(g[launch - WEEKS:launch]) for g in treated), 'after': sum(sum(g[launch:launch + WEEKS]) for g in treated)},
@@ -116,7 +117,7 @@ def main():
     summary['newcomers'] = {k: {'before': round(share(new_pre, k)[0], 4), 'after': round(share(new_post, k)[0], 4)} for k in ('hub', 'control')}
     summary['newcomers']['count'] = {'before': share(new_pre, 'hub')[1], 'after': share(new_post, 'hub')[1]}
 
-    out = {'summary': summary, 'weeks': [
+    out = {'summary': summary, 'placebo_by_week': placebo_by_week, 'weeks': [
         {'week': (datetime.date(2023, 1, 2) + datetime.timedelta(weeks=w)).isoformat(),
          'hubs': sum(g[w] for g in treated), 'control': sum(g[w] for g in control)}
         for w in range(n_weeks)]}

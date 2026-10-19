@@ -97,7 +97,7 @@ Descriptive only. There was no control group, so none of this proves or disprove
 
 ![New followers per week, trending hubs versus comparison accounts](docs/images/impact.jpg)
 
-After the launch the 20 trending hubs gained 136 new followers in eight weeks against 244 before (-44 %), and 20
+After the recommender launch (approx. November 2023) the 20 trending hubs gained 136 new followers in eight weeks against 244 before (-44 %), and 20
 comparison accounts of similar size fell by about the same (-56 %). The small gap between the two is within what fake
 launch dates produce, and new accounts followed a hub less often afterwards (5.5 % against 3.7 %), so there is no
 measurable effect of the recommender on follower growth; a small effect cannot be excluded.
@@ -161,6 +161,9 @@ commented out in `recommender.py`, so the number shows what the idea can do, not
   would need transaction data (for example NEAR Lake or the public BigQuery dataset).
 - **Only follow edges still present are seen.** The account list comes from today's follow keys
   (`api.near.social`), so accounts that have since removed every follow are missing.
+- **"Launch" always means the recommender**, dated approximately to November 2023. The switch of the platform from
+  near.social to near.org (August 2023, per the author) is a separate event that is not modeled; both used the same
+  `social.near` data, so the chain data is continuous across it.
 - **Block heights to dates** are interpolated between blocks with exactly known timestamps (error of a few days).
 
 ## Repository layout

@@ -117,5 +117,4 @@ snapshots: `python3 pipeline/cascade.py` and `python3 pipeline/timeline.py` (nee
 
 ## License
 
-This repository has no license file yet. The original [near_recommender](https://github.com/scopalaffairs/near_recommender)
-repository is GPL-3.0.
+GPL-3.0, like the original [near_recommender](https://github.com/scopalaffairs/near_recommender). See [LICENSE](LICENSE).

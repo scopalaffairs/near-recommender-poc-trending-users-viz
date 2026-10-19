@@ -16,8 +16,6 @@ import collections
 import json
 import sys
 
-import numpy as np
-
 sys.path.insert(0, 'pipeline')
 from hits import hits, load  # noqa: E402
 

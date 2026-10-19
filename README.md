@@ -16,23 +16,31 @@ HITS authority), and gold dots are *bridge accounts* that follow hubs of two or 
 ## Background
 
 NEAR Social was a social network whose posts, likes and follows were written to the NEAR blockchain (contract
-`social.near`). In 2023 a team built a recommender for it as the capstone project of the Constructor Data Science
-Bootcamp (batch 03/2023), in collaboration with Pagoda, the company behind the NEAR Blockchain Operating System. The
-original code is in [scopalaffairs/near_recommender](https://github.com/scopalaffairs/near_recommender). It ran four
-algorithms: top trending users, friends of friends, tag similarity and post similarity.
+`social.near`). In spring 2023 a team of three built a recommender for it as the capstone project of the Constructor
+Data Science Bootcamp (batch 03/2023), in collaboration with Pagoda, the company behind the NEAR Blockchain Operating
+System. That bootcamp code is in [scopalaffairs/near_recommender](https://github.com/scopalaffairs/near_recommender)
+(archived). It had four parts: top trending users, friends of friends, tag similarity and post similarity. Each team
+member owned one method; the author's was the HITS-based one, and the friends-of-friends part was never finished.
 
 The problem the trending-users part addressed: the network had a few large, mostly isolated clusters. The clearest
 one was a "mushroom" of accounts that had joined through the Aurora network and followed only the Aurora news
 account. These clusters did not know each other or the core userbase around `root.near` and `mob.near`. The
 recommender suggested trending users from a *different* community than the user's own, so that clusters would meet.
 
-According to the project author, the timeline was: research in spring 2023 (Google Colab, later Databricks), the
-recommender went live around November 2023 (about the time of NEARCon in Lisbon), and the near.org platform, relaunched
-in August 2023, was shut down in March 2024.
+According to the project author, the timeline was: research in spring 2023 (Google Colab, later Databricks). After the
+bootcamp the author was hired as a freelancer and worked on it full-time from September 2023, improved all three
+methods and handed over the complete package. The author kept no copy of that final code, so the bootcamp repository
+is the only code that survives. The recommender went live
+around November 2023 (about the time of NEARCon in Lisbon). The near.org platform, relaunched in August 2023, was shut
+down in March 2024.
+
+This repository is not that launched system. It rebuilds the network data around it from the public chain, and it
+replays the ideas of the bootcamp code (below).
 
 ### How `trending_users.json` was made originally
 
-Taken from the original code (`src/models/trending_users.py`, `src/data/queries/query_user_metrics.py`):
+Taken from the bootcamp code (`src/models/trending_users.py`, `src/data/queries/query_user_metrics.py`); the launched
+version improved on it, so details may differ:
 
 1. Follow edges come from the parsed `social.near` transactions (`graph_follows`).
 2. Communities: Louvain community detection on the undirected follow graph (cdlib, resolution 1).
@@ -85,9 +93,10 @@ Descriptive only. There was no control group, so none of this proves or disprove
 - **Almost nobody unfollowed.** Less than 0.3 % of follow edges disappeared between snapshots. Writing to the chain
   cost money, which plausibly kept casual activity down.
 
-## Replaying the original recommender ideas
+## Replaying the bootcamp recommender ideas
 
-How well would the ideas of the original repository have predicted the follows that really happened? For a time
+How well would the ideas of the bootcamp repository have predicted the follows that really happened? This is not a
+test of the launched system, which improved all three methods. For a time
 window, the graph at the start is rebuilt, every method recommends accounts per user, and a user counts as a hit if
 at least one recommended account was followed within the window (`pipeline/evaluate.py`, results in
 `data/evaluation.json`). Users are existing accounts that made a new follow in the window (669 before the launch, 715
@@ -102,12 +111,12 @@ within a window, not rates across windows.
 | trending hubs outside the user's community | 11.6 % | 2.8 % |
 | random accounts | 2.5 % | 0.2 % |
 
-The saved recommendations of the original repository (`matrix_intersection_05.json`, 15 per user, committed
+The saved recommendations of the bootcamp repository (`matrix_intersection_05.json`, 15 per user, committed
 2023-04-26; here `data/raw/stored_recommendations_2023-04-26.json`) were tested on the 640 of their users that made a
 new follow before the launch: 25.0 % hit with all 15 and 18.3 % with the top 5. Plain popularity reaches 38.6 % and
 28.1 % for the same users. The lists were hardly personalized: `gilberth.near` was in 3,495 of the 3,499 lists.
 
-For accounts that appear for the first time in the window, which is the case the original rule handled with trending
+For accounts that appear for the first time in the window, which is the case the bootcamp rule handled with trending
 users (accounts younger than 7 days):
 
 | | before launch | after launch |
@@ -119,12 +128,12 @@ users (accounts younger than 7 days):
 | 5 random hubs would hit | 5.5 % | 1.3 % |
 
 What this says: suggesting accounts from another community is the mixing idea of the project, and it is exactly what
-users are least likely to follow on their own (11.6 % against 32.3 % for friends of friends). In the repository's final
-`recommender.py` the friends-of-friends call is commented out, so the best-scoring idea was not served from there.
+users are least likely to follow on their own (11.6 % against 32.3 % for friends of friends).
 
 Limits of this test: it measures agreement with organic follows, not whether users saw or acted on a suggestion
 (there are no impression logs). The trending list is the April 2023 cohort, not a list recomputed at launch. Friends
-of friends is the classic 2-hop count here, not the XGBoost model of the original code.
+of friends is the classic 2-hop count here. In the bootcamp code it was an unfinished XGBoost experiment whose call is
+commented out in `recommender.py`, so the number shows what the idea can do, not what the bootcamp code did.
 
 ## Limitations
 
@@ -151,7 +160,7 @@ of friends is the classic 2-hop count here, not the XGBoost model of the origina
 | `data/trending_users_<date>.json` | cohort graph per snapshot (nodes carry HITS `auth` / `hub`, and `bridge`) |
 | `data/metrics.json` | mixing metrics and isolated clusters per snapshot |
 | `data/timeline.json`, `data/edges_bh_2024-01-15.json` | weekly series and the follow creation block heights behind it |
-| `data/raw/stored_recommendations_2023-04-26.json` | the saved recommendations of the original repository (account to 15 accounts, best first) |
+| `data/raw/stored_recommendations_2023-04-26.json` | the saved recommendations of the bootcamp repository (account to 15 accounts, best first) |
 | `data/evaluation.json` | hold-out results of the recommendation replay |
 | `pipeline/` | the scripts, see [pipeline/README.md](pipeline/README.md) |
 

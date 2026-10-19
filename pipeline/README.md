@@ -25,7 +25,7 @@ The anchor cohort (the 20 hubs and their community groups) is taken from the ori
 held fixed over all snapshots, so before/after compare the same accounts. In the original pipeline the 20 hubs were most likely
 the top trending users (inferred from the original code, not verified against its output), ranked by weighted 30-day engagement divided by weighted 30-day activity (see the top-level
 README), and the groups were Louvain communities. That ranking is not recomputed here: it needs post, like and comment
-history, which SocialDB does not keep (only the latest value per key). For the original SQL see
+history, which SocialDB does not keep (only the latest value per key). For the bootcamp SQL see
 `near_recommender/src/data/queries/query_user_metrics.py` in the original repository. The choice of hubs is also not
 a HITS rank, in-degree or recent follower growth (checked against the 2023-04-15 graph). Reproduction check for
 2023-04-15 against the original file: 96 % of nodes, 93 % of edges.
@@ -42,7 +42,7 @@ appeared later (e.g. creativesdao, nearchinese, nearinturkiye in Oct 2023) are v
 
 ## Evaluation
 
-`python3 pipeline/evaluate.py` replays the recommendation ideas of the original repository (popularity, HITS authority,
+`python3 pipeline/evaluate.py` replays the recommendation ideas of the bootcamp repository (popularity, HITS authority,
 friends of friends, trending hubs outside the user's community, and the saved recommendations in
 `data/raw/stored_recommendations_2023-04-26.json`) on a hold-out basis against the follows that really happened, and
 writes `data/evaluation.json`. See the top-level README for results and limits.

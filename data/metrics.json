@@ -1,0 +1,691 @@
+{
+ "anchors": {
+  "neardigitalcollective.near": 4,
+  "jumpdefisocial.near": 5,
+  "root.near": 1,
+  "mintbase.near": 4,
+  "nearmax.near": 1,
+  "auroraecosystemnews.near": 0,
+  "nekosocial.near": 5,
+  "nearxartdao.near": 9,
+  "vlad.near": 1,
+  "chefsale.near": 1,
+  "petersalomonsen.near": 1,
+  "mob.near": 1,
+  "mundoaurora.near": 0,
+  "obukhova.near": 1,
+  "marieke.near": 1,
+  "itsmarcus.near": 1,
+  "bilibili.near": 1,
+  "scopalaffairs.near": 4,
+  "readylayerone.near": 1,
+  "hackerhouse.near": 1
+ },
+ "snapshots": {
+  "2023-04-15": {
+   "block": 89599925,
+   "accounts_with_follows": 3476,
+   "follow_edges": 17854,
+   "graph_nodes": 1728,
+   "graph_links": 2842,
+   "leaves": 1708,
+   "bridge_leaves": 140,
+   "bridge_share": 0.082,
+   "leaves_per_group": {
+    "0": 1138,
+    "1": 496,
+    "4": 101,
+    "5": 140,
+    "9": 10
+   },
+   "leaves_following_both_groups": {
+    "1-4": 71,
+    "0-1": 76,
+    "0-4": 33,
+    "0-5": 13,
+    "1-5": 14,
+    "4-5": 9,
+    "1-9": 3,
+    "0-9": 1,
+    "4-9": 1,
+    "5-9": 1
+   },
+   "root_userbase_size": 131,
+   "isolated_clusters": [
+    {
+     "id": "auroraecosystemnews.near",
+     "followers": 1139,
+     "isolation": 0.88,
+     "in_cohort": true
+    },
+    {
+     "id": "airdropanalyst.near",
+     "followers": 236,
+     "isolation": 0.98,
+     "in_cohort": false
+    },
+    {
+     "id": "jumpdefisocial.near",
+     "followers": 128,
+     "isolation": 0.87,
+     "in_cohort": true
+    },
+    {
+     "id": "airdropalertdaily.near",
+     "followers": 76,
+     "isolation": 0.93,
+     "in_cohort": false
+    },
+    {
+     "id": "shadatofficial.near",
+     "followers": 72,
+     "isolation": 0.99,
+     "in_cohort": false
+    },
+    {
+     "id": "b97422ee8596c58b80c191c7de77e2b7bb6a93126d844d2d3142e7efe5771a87",
+     "followers": 65,
+     "isolation": 0.97,
+     "in_cohort": false
+    },
+    {
+     "id": "sugihcrypto.near",
+     "followers": 57,
+     "isolation": 0.96,
+     "in_cohort": false
+    },
+    {
+     "id": "nekosocial.near",
+     "followers": 48,
+     "isolation": 0.77,
+     "in_cohort": true
+    },
+    {
+     "id": "trickysharmaji.near",
+     "followers": 40,
+     "isolation": 0.97,
+     "in_cohort": false
+    },
+    {
+     "id": "alaminh.near",
+     "followers": 30,
+     "isolation": 0.87,
+     "in_cohort": false
+    },
+    {
+     "id": "igormig.near",
+     "followers": 26,
+     "isolation": 0.88,
+     "in_cohort": false
+    },
+    {
+     "id": "cryptoboss.near",
+     "followers": 25,
+     "isolation": 1.0,
+     "in_cohort": false
+    },
+    {
+     "id": "mundoaurora.near",
+     "followers": 25,
+     "isolation": 0.56,
+     "in_cohort": true
+    }
+   ]
+  },
+  "2023-10-31": {
+   "block": 104573607,
+   "accounts_with_follows": 7358,
+   "follow_edges": 50995,
+   "graph_nodes": 2422,
+   "graph_links": 4320,
+   "leaves": 2402,
+   "bridge_leaves": 314,
+   "bridge_share": 0.1307,
+   "leaves_per_group": {
+    "0": 1517,
+    "1": 806,
+    "4": 280,
+    "5": 194,
+    "9": 16
+   },
+   "leaves_following_both_groups": {
+    "0-1": 144,
+    "1-4": 187,
+    "0-5": 26,
+    "1-5": 35,
+    "0-4": 96,
+    "4-5": 26,
+    "1-9": 5,
+    "4-9": 2,
+    "5-9": 1
+   },
+   "root_userbase_size": 148,
+   "isolated_clusters": [
+    {
+     "id": "auroraecosystemnews.near",
+     "followers": 1489,
+     "isolation": 0.83,
+     "in_cohort": true
+    },
+    {
+     "id": "creativesdao.sputnik-dao.near",
+     "followers": 320,
+     "isolation": 0.86,
+     "in_cohort": false
+    },
+    {
+     "id": "airdropanalyst.near",
+     "followers": 237,
+     "isolation": 0.97,
+     "in_cohort": false
+    },
+    {
+     "id": "coineasydao.near",
+     "followers": 204,
+     "isolation": 0.59,
+     "in_cohort": false
+    },
+    {
+     "id": "nearchinese.near",
+     "followers": 189,
+     "isolation": 0.77,
+     "in_cohort": false
+    },
+    {
+     "id": "nearmedia.near",
+     "followers": 185,
+     "isolation": 0.78,
+     "in_cohort": false
+    },
+    {
+     "id": "nearinturkiye.near",
+     "followers": 182,
+     "isolation": 0.71,
+     "in_cohort": false
+    },
+    {
+     "id": "jumpdefisocial.near",
+     "followers": 168,
+     "isolation": 0.77,
+     "in_cohort": true
+    },
+    {
+     "id": "indonesiaguild.near",
+     "followers": 166,
+     "isolation": 0.76,
+     "in_cohort": false
+    },
+    {
+     "id": "hunters_super_team.near",
+     "followers": 165,
+     "isolation": 0.64,
+     "in_cohort": false
+    },
+    {
+     "id": "auroraindonesia.near",
+     "followers": 152,
+     "isolation": 0.76,
+     "in_cohort": false
+    },
+    {
+     "id": "nearukraineguild.near",
+     "followers": 146,
+     "isolation": 0.51,
+     "in_cohort": false
+    },
+    {
+     "id": "freelancerdao.near",
+     "followers": 113,
+     "isolation": 0.6,
+     "in_cohort": false
+    },
+    {
+     "id": "auroraisneartr.near",
+     "followers": 113,
+     "isolation": 0.76,
+     "in_cohort": false
+    },
+    {
+     "id": "mundoaurora.near",
+     "followers": 93,
+     "isolation": 0.53,
+     "in_cohort": true
+    },
+    {
+     "id": "airdropalertdaily.near",
+     "followers": 77,
+     "isolation": 0.92,
+     "in_cohort": false
+    },
+    {
+     "id": "nekosocial.near",
+     "followers": 72,
+     "isolation": 0.6,
+     "in_cohort": true
+    },
+    {
+     "id": "shadatofficial.near",
+     "followers": 72,
+     "isolation": 0.99,
+     "in_cohort": false
+    },
+    {
+     "id": "tne_society.near",
+     "followers": 71,
+     "isolation": 0.72,
+     "in_cohort": false
+    },
+    {
+     "id": "b97422ee8596c58b80c191c7de77e2b7bb6a93126d844d2d3142e7efe5771a87",
+     "followers": 70,
+     "isolation": 0.93,
+     "in_cohort": false
+    },
+    {
+     "id": "nearhausa.near",
+     "followers": 67,
+     "isolation": 0.76,
+     "in_cohort": false
+    },
+    {
+     "id": "neararabia.near",
+     "followers": 65,
+     "isolation": 0.92,
+     "in_cohort": false
+    },
+    {
+     "id": "aurority.near",
+     "followers": 62,
+     "isolation": 0.61,
+     "in_cohort": false
+    },
+    {
+     "id": "sugihcrypto.near",
+     "followers": 58,
+     "isolation": 0.95,
+     "in_cohort": false
+    },
+    {
+     "id": "near-nigeria.near",
+     "followers": 46,
+     "isolation": 0.61,
+     "in_cohort": false
+    },
+    {
+     "id": "nearnativenews.near",
+     "followers": 44,
+     "isolation": 0.68,
+     "in_cohort": false
+    },
+    {
+     "id": "trickysharmaji.near",
+     "followers": 40,
+     "isolation": 0.97,
+     "in_cohort": false
+    },
+    {
+     "id": "apextrybe.near",
+     "followers": 39,
+     "isolation": 0.64,
+     "in_cohort": false
+    },
+    {
+     "id": "omegadigi-worlddao.near",
+     "followers": 33,
+     "isolation": 0.67,
+     "in_cohort": false
+    },
+    {
+     "id": "alaminh.near",
+     "followers": 31,
+     "isolation": 0.84,
+     "in_cohort": false
+    },
+    {
+     "id": "filipino-artist-guild.near",
+     "followers": 30,
+     "isolation": 0.53,
+     "in_cohort": false
+    },
+    {
+     "id": "youngfreshcreative.near",
+     "followers": 30,
+     "isolation": 0.5,
+     "in_cohort": false
+    },
+    {
+     "id": "louisliu.near",
+     "followers": 30,
+     "isolation": 0.5,
+     "in_cohort": false
+    },
+    {
+     "id": "2a646138f3b713b2c78f184095f7560338cc12268b46e19cd7d2ca41a5c8a4a0",
+     "followers": 27,
+     "isolation": 0.52,
+     "in_cohort": false
+    },
+    {
+     "id": "igormig.near",
+     "followers": 26,
+     "isolation": 0.88,
+     "in_cohort": false
+    },
+    {
+     "id": "cryptoboss.near",
+     "followers": 25,
+     "isolation": 1.0,
+     "in_cohort": false
+    }
+   ]
+  },
+  "2024-01-15": {
+   "block": 110424804,
+   "accounts_with_follows": 8773,
+   "follow_edges": 56328,
+   "graph_nodes": 2518,
+   "graph_links": 4500,
+   "leaves": 2498,
+   "bridge_leaves": 333,
+   "bridge_share": 0.1333,
+   "leaves_per_group": {
+    "0": 1532,
+    "1": 878,
+    "4": 298,
+    "5": 209,
+    "9": 22
+   },
+   "leaves_following_both_groups": {
+    "0-1": 158,
+    "1-4": 198,
+    "0-4": 99,
+    "0-5": 27,
+    "1-5": 40,
+    "4-5": 29,
+    "0-9": 2,
+    "1-9": 7,
+    "4-9": 4,
+    "5-9": 1
+   },
+   "root_userbase_size": 149,
+   "isolated_clusters": [
+    {
+     "id": "auroraecosystemnews.near",
+     "followers": 1500,
+     "isolation": 0.82,
+     "in_cohort": true
+    },
+    {
+     "id": "creativesdao.sputnik-dao.near",
+     "followers": 330,
+     "isolation": 0.84,
+     "in_cohort": false
+    },
+    {
+     "id": "nearinturkiye.near",
+     "followers": 259,
+     "isolation": 0.79,
+     "in_cohort": false
+    },
+    {
+     "id": "airdropanalyst.near",
+     "followers": 237,
+     "isolation": 0.98,
+     "in_cohort": false
+    },
+    {
+     "id": "coineasydao.near",
+     "followers": 223,
+     "isolation": 0.58,
+     "in_cohort": false
+    },
+    {
+     "id": "nearmedia.near",
+     "followers": 210,
+     "isolation": 0.73,
+     "in_cohort": false
+    },
+    {
+     "id": "nearchinese.near",
+     "followers": 201,
+     "isolation": 0.75,
+     "in_cohort": false
+    },
+    {
+     "id": "jumpdefisocial.near",
+     "followers": 171,
+     "isolation": 0.76,
+     "in_cohort": true
+    },
+    {
+     "id": "indonesiaguild.near",
+     "followers": 170,
+     "isolation": 0.74,
+     "in_cohort": false
+    },
+    {
+     "id": "hunters_super_team.near",
+     "followers": 166,
+     "isolation": 0.6,
+     "in_cohort": false
+    },
+    {
+     "id": "auroraindonesia.near",
+     "followers": 154,
+     "isolation": 0.73,
+     "in_cohort": false
+    },
+    {
+     "id": "freelancerdao.near",
+     "followers": 116,
+     "isolation": 0.58,
+     "in_cohort": false
+    },
+    {
+     "id": "auroraisneartr.near",
+     "followers": 115,
+     "isolation": 0.74,
+     "in_cohort": false
+    },
+    {
+     "id": "nearhausa.near",
+     "followers": 99,
+     "isolation": 0.77,
+     "in_cohort": false
+    },
+    {
+     "id": "mundoaurora.near",
+     "followers": 97,
+     "isolation": 0.52,
+     "in_cohort": true
+    },
+    {
+     "id": "refsocial.near",
+     "followers": 95,
+     "isolation": 0.6,
+     "in_cohort": false
+    },
+    {
+     "id": "nekosocial.near",
+     "followers": 86,
+     "isolation": 0.57,
+     "in_cohort": true
+    },
+    {
+     "id": "airdropalertdaily.near",
+     "followers": 77,
+     "isolation": 0.92,
+     "in_cohort": false
+    },
+    {
+     "id": "tne_society.near",
+     "followers": 73,
+     "isolation": 0.71,
+     "in_cohort": false
+    },
+    {
+     "id": "shadatofficial.near",
+     "followers": 72,
+     "isolation": 0.99,
+     "in_cohort": false
+    },
+    {
+     "id": "b97422ee8596c58b80c191c7de77e2b7bb6a93126d844d2d3142e7efe5771a87",
+     "followers": 70,
+     "isolation": 0.93,
+     "in_cohort": false
+    },
+    {
+     "id": "neararabia.near",
+     "followers": 65,
+     "isolation": 0.92,
+     "in_cohort": false
+    },
+    {
+     "id": "aurority.near",
+     "followers": 62,
+     "isolation": 0.55,
+     "in_cohort": false
+    },
+    {
+     "id": "sugihcrypto.near",
+     "followers": 61,
+     "isolation": 0.95,
+     "in_cohort": false
+    },
+    {
+     "id": "omegadigi-worlddao.near",
+     "followers": 53,
+     "isolation": 0.66,
+     "in_cohort": false
+    },
+    {
+     "id": "sammoo.near",
+     "followers": 48,
+     "isolation": 0.77,
+     "in_cohort": false
+    },
+    {
+     "id": "near-nigeria.near",
+     "followers": 47,
+     "isolation": 0.6,
+     "in_cohort": false
+    },
+    {
+     "id": "nearnativenews.near",
+     "followers": 44,
+     "isolation": 0.68,
+     "in_cohort": false
+    },
+    {
+     "id": "motinha.near",
+     "followers": 42,
+     "isolation": 0.79,
+     "in_cohort": false
+    },
+    {
+     "id": "trickysharmaji.near",
+     "followers": 40,
+     "isolation": 0.97,
+     "in_cohort": false
+    },
+    {
+     "id": "apextrybe.near",
+     "followers": 39,
+     "isolation": 0.64,
+     "in_cohort": false
+    },
+    {
+     "id": "nearnftwg.near",
+     "followers": 37,
+     "isolation": 0.68,
+     "in_cohort": false
+    },
+    {
+     "id": "anasha.near",
+     "followers": 36,
+     "isolation": 0.69,
+     "in_cohort": false
+    },
+    {
+     "id": "filipino-artist-guild.near",
+     "followers": 36,
+     "isolation": 0.53,
+     "in_cohort": false
+    },
+    {
+     "id": "near_mobile.near",
+     "followers": 33,
+     "isolation": 0.58,
+     "in_cohort": false
+    },
+    {
+     "id": "mywonder23.near",
+     "followers": 32,
+     "isolation": 0.59,
+     "in_cohort": false
+    },
+    {
+     "id": "alaminh.near",
+     "followers": 31,
+     "isolation": 0.84,
+     "in_cohort": false
+    },
+    {
+     "id": "louisliu.near",
+     "followers": 30,
+     "isolation": 0.5,
+     "in_cohort": false
+    },
+    {
+     "id": "c4d24dbb02ea78a99b4274d7a3988d9729d8aa390304772ba690b0893e6810c3",
+     "followers": 29,
+     "isolation": 0.69,
+     "in_cohort": false
+    },
+    {
+     "id": "igormig.near",
+     "followers": 27,
+     "isolation": 0.89,
+     "in_cohort": false
+    },
+    {
+     "id": "2a646138f3b713b2c78f184095f7560338cc12268b46e19cd7d2ca41a5c8a4a0",
+     "followers": 27,
+     "isolation": 0.52,
+     "in_cohort": false
+    },
+    {
+     "id": "paplee.near",
+     "followers": 26,
+     "isolation": 0.88,
+     "in_cohort": false
+    },
+    {
+     "id": "c3f1e6ce50f5a3e33a1db4a966bec3c35897cb6e63aa8f90aa6b6a2b34eb7c74",
+     "followers": 26,
+     "isolation": 0.65,
+     "in_cohort": false
+    },
+    {
+     "id": "cryptoboss.near",
+     "followers": 25,
+     "isolation": 1.0,
+     "in_cohort": false
+    },
+    {
+     "id": "kaplanls2.near",
+     "followers": 25,
+     "isolation": 0.72,
+     "in_cohort": false
+    },
+    {
+     "id": "racheludoka.near",
+     "followers": 25,
+     "isolation": 0.52,
+     "in_cohort": false
+    }
+   ]
+  }
+ }
+}

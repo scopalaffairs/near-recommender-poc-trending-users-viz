@@ -14,3 +14,19 @@ Run from the repo root (`python3 pipeline/snap2.py`); paths are relative to it.
 
 Snapshots: 2023-04-15 (before), 2023-10-31 (shortly before recommender launch), 2024-01-15 (after).
 Limitation: the account list is from today, so accounts that have since removed all follows are missing.
+
+## Cascade and outputs
+
+`python3 pipeline/cascade.py` (needs numpy) turns each snapshot into `data/trending_users_<date>.json`
+(same schema as `trending_users.json`, plus per node `auth`/`hub` = HITS scores and `bridge: true` for
+accounts following anchors of two or more communities) and writes `data/metrics.json`.
+
+The anchor cohort (20 hubs and their community groups) is taken from the original `trending_users.json`
+and held fixed over all snapshots, so before/after compare the same accounts. The original hub selection
+rule is not recoverable: it is not HITS rank, in-degree or recent follower growth (checked against the
+2023-04-15 graph); `scopalaffairs.near` with 4 followers shows it was partly hand-picked. Reproduction check
+for 2023-04-15 against the original file: 96 % of nodes, 93 % of edges.
+
+`metrics.json` also lists isolated clusters per snapshot (non-root-userbase accounts with >= 25 followers
+who follow nobody in the root userbase). These are not part of the cohort graphs, so clusters that only
+appeared later (e.g. creativesdao, nearchinese, nearinturkiye in Oct 2023) are visible there but not in the viz.
